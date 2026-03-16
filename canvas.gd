@@ -1,0 +1,149 @@
+extends Control
+
+var grid_size = 8
+var sprite_data = [] # Holds 64 integers (0-15)
+var current_color_index = 1 # What the user is currently "holding" (e.g., 1 = black)
+
+# Your console's 16 fixed colors. Index 0 is often transparent.
+var palette = [
+	Color8(0, 0, 0, 0),      # 0: Transparent (or solid black: Color8(0, 0, 0))
+	Color8(255, 0, 0),       # 1: Red
+	Color8(0, 255, 0),       # 2: Green
+	Color8(0, 0, 255),       # 3: Blue
+	Color8(150, 0, 150),     # 4: Purple
+	Color8(230, 201, 137),   # 5: Yellow
+	Color8(160, 80, 60),     # 6: Brown
+	Color8(255, 204, 170),   # 7: Peach
+	Color8(131, 118, 156),   # 8: Lavender
+	Color8(194, 195, 199),   # 9: Light gray
+	Color8(174, 175, 179),   # 10: Dark Gray
+	Color8(29, 43, 83),      # 11: Dark blue
+	Color8(126, 37, 83),     # 12: Dark Purple
+	Color8(168, 231, 46),    # 13: Lime Green
+	Color8(117, 70, 101),    # 14: Mauve
+	Color8(18, 83, 89)       # 15: Blue-Green
+]
+
+func _ready():
+	# Initialize our fantasy memory block with 0s (transparent)
+	sprite_data.resize(grid_size * grid_size)
+	sprite_data.fill(0) 
+
+func _gui_input(event):
+	# Paint when left-clicking or dragging
+	if event is InputEventMouseButton or event is InputEventMouseMotion:
+		if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+			_paint_pixel(event.position)
+
+func _paint_pixel(mouse_pos: Vector2):
+	var cell_size = size.x / grid_size
+	
+	var x = int(mouse_pos.x / cell_size)
+	var y = int(mouse_pos.y / cell_size)
+	
+	if x >= 0 and x < grid_size and y >= 0 and y < grid_size:
+		var index = (y * grid_size) + x
+		
+		if sprite_data[index] != current_color_index:
+			sprite_data[index] = current_color_index
+			queue_redraw()
+
+func _draw():
+	var cell_size = size.x / grid_size
+	
+	for i in range(sprite_data.size()):
+		var x = i % grid_size
+		var y = int(i / grid_size)
+		
+		var memory_value = sprite_data[i]
+		var actual_color = palette[memory_value]
+		
+		var rect = Rect2(Vector2(x, y) * cell_size, Vector2(cell_size, cell_size))
+		draw_rect(rect, actual_color)
+
+
+
+
+
+
+
+func _on_black_pressed() -> void:
+	current_color_index = 0
+	pass 
+
+
+func _on_red_pressed() -> void:
+	current_color_index = 1
+	pass 
+
+
+func _on_green_pressed() -> void:
+	current_color_index = 2
+	pass 
+
+
+func _on_blue_pressed() -> void:
+	current_color_index = 3
+	pass 
+
+
+func _on_purple_pressed() -> void:
+	current_color_index = 4
+	pass 
+
+func _on_yellow_pressed() -> void:
+	current_color_index = 5
+	pass
+
+
+func _on_brown_pressed() -> void:
+	current_color_index = 6
+	pass
+
+
+func _on_peach_pressed() -> void:
+	current_color_index = 7
+	pass 
+
+
+
+func _on_lavender_pressed() -> void:
+	current_color_index = 8
+	pass
+
+
+func _on_light_gray_pressed() -> void:
+	current_color_index = 9
+	pass 
+
+
+func _on_dark_gray_pressed() -> void:
+	current_color_index = 10
+	pass
+	
+
+
+func _on_dark_blue_pressed() -> void:
+	current_color_index = 11
+	pass
+
+
+func _on_dark_purple_pressed() -> void:
+	current_color_index = 12
+	pass
+
+
+
+func _on_lime_green_pressed() -> void:
+	current_color_index = 13
+	pass 
+
+
+func _on_mauve_pressed() -> void:
+	current_color_index = 14
+	pass
+
+
+func _on_teal_pressed() -> void:
+	current_color_index = 15
+	pass 

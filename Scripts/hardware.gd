@@ -1,19 +1,51 @@
 extends Node
 
 var ram = PackedByteArray()
-var texture
-@export var Screen: TextureRect
+var Screen: TextureRect
 
 const VramStart = 0x000
 const VramEnd = 0x4B00
 const PalleteStart = 0x4B01
 const InputAddr = 0x4B31
+const SpriteStart = 0x4B32
+const SpriteSize = 32
+
+var Input_byte
+var img: Image
+var texture: ImageTexture
+
+var player_x = 120
+var player_y = 65
+
+var wrapping_enabled: bool = true
+
 
 func _ready() -> void:
 	ram.resize(65536)
 	ram.fill(0)
 	SetDefaultPallete()
-	
+	img = Image.create(240, 160, false, Image.FORMAT_RGB8)
+	texture = ImageTexture.create_from_image(img)
+	Screen = get_node("TextureRect")
+	print("Screen value: ", Screen)
+	print("Screen is null: ", Screen == null)
+	Screen.texture = texture
+	draw_test_pattern()
+	Input_byte = ram[InputAddr]
+	for i in range(32):
+		ram[SpriteStart + i] = 0x11 # Fill with Red (Color 1)
+		ram[SpriteStart + 12] = 0x15     # Add a Yellow dot (Color 5) in the middle
+
+
+
+
+
+
+
+
+
+
+# VRAM/Rendering
 func SetDefaultPallete() -> void:
 	#Think about color pallete later aswell
 	var colors = [
@@ -28,7 +60,11 @@ func SetDefaultPallete() -> void:
 		[131, 118, 156], # Lavender
 		[194, 195, 199], # light gray
 		[194, 195, 199], #Dark gray
-		[29, 43, 83] # dark blue
+		[29, 43, 83], # dark blue
+		[126, 37, 83], # Dark Purple
+		[168,231,46], # Lime Green
+		[117,70,101], #Mauve
+		[18,83,89] # Blue-Green
 	]
 	for i in colors.size():
 		var base_address = PalleteStart + (i * 3)
@@ -39,6 +75,9 @@ func SetDefaultPallete() -> void:
 	pass
 	
 func WritePixel(x: int, y: int, ColorIndex: int) -> void:
+	if(wrapping_enabled):
+		x = x % 240
+		y = y % 160
 	var pixel_index = y * 240 + x
 	var byte_index = pixel_index / 2
 	var current_byte = ram[byte_index]
@@ -55,11 +94,11 @@ func WritePixel(x: int, y: int, ColorIndex: int) -> void:
 		var new_color = ColorIndex
 		current_byte |= new_color
 	ram[byte_index] = current_byte
+	
 	pass
 
 
 func update_display():
-	var img = Image.create(240, 160, false, Image.FORMAT_RGB8)
 	
 	for i in range(19200):
 		var current_byte = ram[VramStart + i]
@@ -78,16 +117,50 @@ func update_display():
 		var x_right = pixel_index_right % 240
 		var y_right = pixel_index_right / 240
 		img.set_pixel(x_right, y_right, get_color_from_ram(color_idx_right))
-	
-	texture = ImageTexture.create_from_image(img)
-	Screen.texture = texture
+	texture.update(img)
 
 
 
 func _process(delta: float) -> void:
-	update_display()
+	update_display()	
+	CheckInput()
+	if Input_byte & 0x01: player_y -= 1 # UP (Bit 0)
+	if Input_byte & 0x02: player_y += 1 # DOWN (Bit 1)
+	if Input_byte & 0x04: player_x -= 1 # LEFT (Bit 2)
+	if Input_byte & 0x08: player_x += 1 # RIGHT (Bit 3)
+	draw_test_pattern() # Clear screen with background
+	draw_sprite(0, player_x, player_y) # Draw player sprite
+	update_display() # Push RAM to texture
+	if(Input.is_key_pressed(KEY_R)): get_tree().change_scene_to_file("res://Editor.tscn")
 	pass
 
+func CheckInput():
+	if Input.is_action_pressed("UP"):
+		Input_byte |= 0x01
+	else:
+		Input_byte &= ~0x01
+	if Input.is_action_pressed("DOWN"):
+		Input_byte |= 0x02
+	else:
+		Input_byte &= ~0x02
+	if Input.is_action_pressed("LEFT"):
+		Input_byte |= 0x04
+	else:
+		Input_byte &= ~0x04
+	if Input.is_action_pressed("RIGHT"):
+		Input_byte |= 0x08
+	else:
+		Input_byte &= ~0x08
+	if Input.is_action_pressed("A"):
+		Input_byte |= 0x10
+	else:
+		Input_byte &= ~0x10
+	if Input.is_action_pressed("B"):
+		Input_byte |= 0x20
+	else:
+		Input_byte &= ~0x20
+	ram[InputAddr] = Input_byte
+	
 
 func get_color_from_ram(ColorIndex: int) -> Color:
 	var base = PalleteStart + (ColorIndex * 3)
@@ -95,3 +168,49 @@ func get_color_from_ram(ColorIndex: int) -> Color:
 	var green = ram[base + 1] / 255.0
 	var blue = ram[base + 2] / 255.0
 	return Color(red,green,blue)
+	
+	
+func draw_sprite(index: int, screen_x: int, screen_y: int) -> void:
+	var base_addr = SpriteStart + (index * SpriteSize)
+	for i in range(64):
+		var sx = i % 8
+		var sy = i / 8
+		
+		# Each byte has 2 pixels, find the right one
+		var byte_offset = i / 2
+		var current_byte = ram[base_addr + byte_offset]
+		var color_idx: int
+		
+		if i % 2 == 0:
+			color_idx = current_byte >> 4      # Get top 4 bits
+		else:
+			color_idx = current_byte & 0x0F    # Get bottom 4 bits
+			
+		# Treat Color 0 as "Transparent" so sprites aren't just solid blocks
+		if color_idx != 0:
+			WritePixel(screen_x + sx, screen_y + sy, color_idx)
+	
+	
+	
+	
+func fill_rect(x: int, y: int, width: int, height: int, color_index: int) -> void:
+	for i in range(y, y + height):
+		for j in range(x, x + width):
+			WritePixel(j, i, color_index)
+
+func draw_test_pattern() -> void:
+	# 1. Clear screen to Dark Blue (Index 11)
+	fill_rect(0, 0, 240, 160, 11)
+	
+	# 2. Draw a Red border (Index 1)
+	for x in range(240):
+		WritePixel(x, 0, 1)   # Top
+		WritePixel(x, 159, 1) # Bottom
+	for y in range(160):
+		WritePixel(0, y, 1)   # Left
+		WritePixel(239, y, 1) # Right
+		
+	fill_rect(20, 20, 40, 40, 2)  # Green Square
+	fill_rect(70, 20, 40, 40, 3)  # Blue Square
+	fill_rect(120, 20, 40, 40, 5) # Yellow Square
+	fill_rect(170, 20, 40, 40, 6) # Brown Square
