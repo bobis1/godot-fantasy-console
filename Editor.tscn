@@ -1,20 +1,34 @@
 [gd_scene format=3 uid="uid://dm0aftwtt31rv"]
 
-[ext_resource type="Script" uid="uid://b0ktyk8ekr0kc" path="res://Scripts/SpriteEditor.gd" id="1_62x0m"]
-[ext_resource type="Script" uid="uid://cq24fawa3q2yq" path="res://canvas.gd" id="2_1qsck"]
+[ext_resource type="Script" uid="uid://cq24fawa3q2yq" path="res://Scripts/canvas.gd" id="2_1qsck"]
 
-[sub_resource type="Theme" id="Theme_8a4yl"]
+[sub_resource type="GDScript" id="GDScript_62x0m"]
+script/source = "extends Control
+
+var CurrentColor: String
+var ColorNames: Array = [\"Black\", \"Red\", \"Green\", \"Blue\", \"Purple\", \"Yellow\", \"Brown\", \"Peach\", \"Lavender\", \"Light Gray\", \"Dark Gray\", \"Dark Blue\", \"Dark Purple\", \"Lime Green\", \"Mauve\", \"Teal\"]
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+"
 
 [node name="Editor" type="Node2D" unique_id=1189686964]
 
 [node name="Control" type="Control" parent="." unique_id=2099387470]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 795.0
+offset_left = 792.0
 offset_top = 76.0
-offset_right = 835.0
+offset_right = 832.0
 offset_bottom = 116.0
-script = ExtResource("1_62x0m")
+script = SubResource("GDScript_62x0m")
 
 [node name="Color Select" type="GridContainer" parent="Control" unique_id=927129870]
 layout_mode = 0
@@ -88,210 +102,6 @@ text = "Mauve"
 layout_mode = 2
 text = "Teal"
 
-[node name="Drawing" type="GridContainer" parent="Control" unique_id=1606171632]
-layout_mode = 0
-offset_left = -5462.0
-offset_top = 151.0
-offset_right = -5398.0
-offset_bottom = 215.0
-scale = Vector2(10, 10)
-theme = SubResource("Theme_8a4yl")
-theme_override_constants/h_separation = 0
-theme_override_constants/v_separation = 0
-columns = 8
-
-[node name="Button" type="Button" parent="Control/Drawing" unique_id=1634951943]
-layout_mode = 2
-
-[node name="Button2" type="Button" parent="Control/Drawing" unique_id=997644981]
-layout_mode = 2
-
-[node name="Button3" type="Button" parent="Control/Drawing" unique_id=323536909]
-layout_mode = 2
-
-[node name="Button4" type="Button" parent="Control/Drawing" unique_id=1301615573]
-layout_mode = 2
-
-[node name="Button5" type="Button" parent="Control/Drawing" unique_id=216962411]
-layout_mode = 2
-
-[node name="Button6" type="Button" parent="Control/Drawing" unique_id=216570630]
-layout_mode = 2
-
-[node name="Button7" type="Button" parent="Control/Drawing" unique_id=1516235022]
-layout_mode = 2
-
-[node name="Button8" type="Button" parent="Control/Drawing" unique_id=1605559595]
-layout_mode = 2
-
-[node name="Button9" type="Button" parent="Control/Drawing" unique_id=727530765]
-layout_mode = 2
-
-[node name="Button10" type="Button" parent="Control/Drawing" unique_id=529887269]
-layout_mode = 2
-
-[node name="Button11" type="Button" parent="Control/Drawing" unique_id=1347763776]
-layout_mode = 2
-
-[node name="Button12" type="Button" parent="Control/Drawing" unique_id=352586198]
-layout_mode = 2
-
-[node name="Button13" type="Button" parent="Control/Drawing" unique_id=1772601312]
-layout_mode = 2
-
-[node name="Button14" type="Button" parent="Control/Drawing" unique_id=32774912]
-layout_mode = 2
-
-[node name="Button15" type="Button" parent="Control/Drawing" unique_id=1876018505]
-layout_mode = 2
-
-[node name="Button16" type="Button" parent="Control/Drawing" unique_id=76848001]
-layout_mode = 2
-
-[node name="Button17" type="Button" parent="Control/Drawing" unique_id=881600033]
-layout_mode = 2
-
-[node name="Button18" type="Button" parent="Control/Drawing" unique_id=735293241]
-layout_mode = 2
-
-[node name="Button19" type="Button" parent="Control/Drawing" unique_id=1562577796]
-layout_mode = 2
-
-[node name="Button20" type="Button" parent="Control/Drawing" unique_id=1291443106]
-layout_mode = 2
-
-[node name="Button21" type="Button" parent="Control/Drawing" unique_id=965539432]
-layout_mode = 2
-
-[node name="Button22" type="Button" parent="Control/Drawing" unique_id=985276450]
-layout_mode = 2
-
-[node name="Button23" type="Button" parent="Control/Drawing" unique_id=1328904505]
-layout_mode = 2
-
-[node name="Button24" type="Button" parent="Control/Drawing" unique_id=417210193]
-layout_mode = 2
-
-[node name="Button25" type="Button" parent="Control/Drawing" unique_id=2120567916]
-layout_mode = 2
-
-[node name="Button26" type="Button" parent="Control/Drawing" unique_id=419151896]
-layout_mode = 2
-
-[node name="Button27" type="Button" parent="Control/Drawing" unique_id=205292720]
-layout_mode = 2
-
-[node name="Button28" type="Button" parent="Control/Drawing" unique_id=1773794310]
-layout_mode = 2
-
-[node name="Button29" type="Button" parent="Control/Drawing" unique_id=1174697210]
-layout_mode = 2
-
-[node name="Button30" type="Button" parent="Control/Drawing" unique_id=834373011]
-layout_mode = 2
-
-[node name="Button31" type="Button" parent="Control/Drawing" unique_id=1465445667]
-layout_mode = 2
-
-[node name="Button32" type="Button" parent="Control/Drawing" unique_id=409101348]
-layout_mode = 2
-
-[node name="Button33" type="Button" parent="Control/Drawing" unique_id=1062452771]
-layout_mode = 2
-
-[node name="Button34" type="Button" parent="Control/Drawing" unique_id=1746791483]
-layout_mode = 2
-
-[node name="Button35" type="Button" parent="Control/Drawing" unique_id=830759552]
-layout_mode = 2
-
-[node name="Button36" type="Button" parent="Control/Drawing" unique_id=730265816]
-layout_mode = 2
-
-[node name="Button37" type="Button" parent="Control/Drawing" unique_id=1088918655]
-layout_mode = 2
-
-[node name="Button38" type="Button" parent="Control/Drawing" unique_id=925627555]
-layout_mode = 2
-
-[node name="Button39" type="Button" parent="Control/Drawing" unique_id=1276939281]
-layout_mode = 2
-
-[node name="Button40" type="Button" parent="Control/Drawing" unique_id=1145987175]
-layout_mode = 2
-
-[node name="Button41" type="Button" parent="Control/Drawing" unique_id=1155246766]
-layout_mode = 2
-
-[node name="Button42" type="Button" parent="Control/Drawing" unique_id=1193771777]
-layout_mode = 2
-
-[node name="Button43" type="Button" parent="Control/Drawing" unique_id=1575516826]
-layout_mode = 2
-
-[node name="Button44" type="Button" parent="Control/Drawing" unique_id=1311474338]
-layout_mode = 2
-
-[node name="Button45" type="Button" parent="Control/Drawing" unique_id=1305545654]
-layout_mode = 2
-
-[node name="Button46" type="Button" parent="Control/Drawing" unique_id=1982043164]
-layout_mode = 2
-
-[node name="Button47" type="Button" parent="Control/Drawing" unique_id=1747213755]
-layout_mode = 2
-
-[node name="Button48" type="Button" parent="Control/Drawing" unique_id=575586354]
-layout_mode = 2
-
-[node name="Button49" type="Button" parent="Control/Drawing" unique_id=1640537564]
-layout_mode = 2
-
-[node name="Button50" type="Button" parent="Control/Drawing" unique_id=1157154821]
-layout_mode = 2
-
-[node name="Button51" type="Button" parent="Control/Drawing" unique_id=1446115720]
-layout_mode = 2
-
-[node name="Button52" type="Button" parent="Control/Drawing" unique_id=267016452]
-layout_mode = 2
-
-[node name="Button53" type="Button" parent="Control/Drawing" unique_id=212664484]
-layout_mode = 2
-
-[node name="Button54" type="Button" parent="Control/Drawing" unique_id=1183831238]
-layout_mode = 2
-
-[node name="Button55" type="Button" parent="Control/Drawing" unique_id=2111950913]
-layout_mode = 2
-
-[node name="Button56" type="Button" parent="Control/Drawing" unique_id=1716898034]
-layout_mode = 2
-
-[node name="Button57" type="Button" parent="Control/Drawing" unique_id=1237340383]
-layout_mode = 2
-
-[node name="Button58" type="Button" parent="Control/Drawing" unique_id=1453801447]
-layout_mode = 2
-
-[node name="Button59" type="Button" parent="Control/Drawing" unique_id=1210204862]
-layout_mode = 2
-
-[node name="Button60" type="Button" parent="Control/Drawing" unique_id=2025931258]
-layout_mode = 2
-
-[node name="Button61" type="Button" parent="Control/Drawing" unique_id=1909243348]
-layout_mode = 2
-
-[node name="Button62" type="Button" parent="Control/Drawing" unique_id=703707560]
-layout_mode = 2
-
-[node name="Button63" type="Button" parent="Control/Drawing" unique_id=1172051674]
-layout_mode = 2
-
-[node name="Button64" type="Button" parent="Control/Drawing" unique_id=9547313]
-layout_mode = 2
-
 [node name="ColorRect" type="ColorRect" parent="Control" unique_id=1824463377]
 layout_mode = 0
 offset_top = 151.0
@@ -299,6 +109,23 @@ offset_right = 40.0
 offset_bottom = 191.0
 scale = Vector2(20, 20)
 script = ExtResource("2_1qsck")
+
+[node name="Save" type="Button" parent="Control" unique_id=4781677]
+layout_mode = 0
+offset_left = 405.0
+offset_top = 101.0
+offset_right = 449.0
+offset_bottom = 132.0
+text = "Save"
+
+[node name="Back" type="Button" parent="Control" unique_id=312809416]
+layout_mode = 0
+offset_left = 407.0
+offset_top = 64.0
+offset_right = 452.0
+offset_bottom = 95.0
+text = "Back
+"
 
 [connection signal="pressed" from="Control/Color Select/Black" to="Control/ColorRect" method="_on_black_pressed"]
 [connection signal="pressed" from="Control/Color Select/Red" to="Control/ColorRect" method="_on_red_pressed"]
@@ -316,3 +143,5 @@ script = ExtResource("2_1qsck")
 [connection signal="pressed" from="Control/Color Select/Lime Green" to="Control/ColorRect" method="_on_lime_green_pressed"]
 [connection signal="pressed" from="Control/Color Select/Mauve" to="Control/ColorRect" method="_on_mauve_pressed"]
 [connection signal="pressed" from="Control/Color Select/Teal" to="Control/ColorRect" method="_on_teal_pressed"]
+[connection signal="pressed" from="Control/Save" to="Control/ColorRect" method="_on_save_pressed"]
+[connection signal="pressed" from="Control/Back" to="Control/ColorRect" method="_on_back_pressed"]

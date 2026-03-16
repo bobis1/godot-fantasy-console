@@ -6,7 +6,7 @@ var current_color_index = 1 # What the user is currently "holding" (e.g., 1 = bl
 
 # Your console's 16 fixed colors. Index 0 is often transparent.
 var palette = [
-	Color8(0, 0, 0, 0),      # 0: Transparent (or solid black: Color8(0, 0, 0))
+	Color8(0, 0, 0, 0),     
 	Color8(255, 0, 0),       # 1: Red
 	Color8(0, 255, 0),       # 2: Green
 	Color8(0, 0, 255),       # 3: Blue
@@ -16,7 +16,7 @@ var palette = [
 	Color8(255, 204, 170),   # 7: Peach
 	Color8(131, 118, 156),   # 8: Lavender
 	Color8(194, 195, 199),   # 9: Light gray
-	Color8(174, 175, 179),   # 10: Dark Gray
+	Color8(104, 105, 109),   # 10: Dark Gray
 	Color8(29, 43, 83),      # 11: Dark blue
 	Color8(126, 37, 83),     # 12: Dark Purple
 	Color8(168, 231, 46),    # 13: Lime Green
@@ -146,4 +146,30 @@ func _on_mauve_pressed() -> void:
 
 func _on_teal_pressed() -> void:
 	current_color_index = 15
+	pass 
+
+
+func _on_save_pressed() -> void:
+	save_to_file(get_sprite_as_buffer())
+	pass
+	
+	
+func get_sprite_as_buffer() -> PackedByteArray:
+	var buffer = PackedByteArray()
+	buffer.resize(32) 
+	for i in range(32):
+		var pixel_left = sprite_data[i * 2]      
+		var pixel_right = sprite_data[i * 2 + 1]  
+		var packed_byte = (pixel_left << 4) | (pixel_right & 0x0F)
+		buffer[i] = packed_byte
+		
+	return buffer
+	
+func save_to_file(content):
+	var file = FileAccess.open("user://save_sprite.dat", FileAccess.WRITE)
+	file.store_buffer(content)
+
+
+func _on_back_pressed() -> void:
+	get_tree().change_scene_to_file("res://main.tscn")
 	pass 

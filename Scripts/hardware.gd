@@ -59,7 +59,7 @@ func SetDefaultPallete() -> void:
 		[255, 204, 170], # peach
 		[131, 118, 156], # Lavender
 		[194, 195, 199], # light gray
-		[194, 195, 199], #Dark gray
+		[104, 105, 109], #Dark gray
 		[29, 43, 83], # dark blue
 		[126, 37, 83], # Dark Purple
 		[168,231,46], # Lime Green
@@ -124,13 +124,17 @@ func update_display():
 func _process(delta: float) -> void:
 	update_display()	
 	CheckInput()
+	
 	if Input_byte & 0x01: player_y -= 1 # UP (Bit 0)
 	if Input_byte & 0x02: player_y += 1 # DOWN (Bit 1)
 	if Input_byte & 0x04: player_x -= 1 # LEFT (Bit 2)
 	if Input_byte & 0x08: player_x += 1 # RIGHT (Bit 3)
 	draw_test_pattern() # Clear screen with background
 	draw_sprite(0, player_x, player_y) # Draw player sprite
+	load_sprite_from_file("user://save_sprite.dat", 1)
+	draw_sprite(1, player_x, player_y)
 	update_display() # Push RAM to texture
+
 	if(Input.is_key_pressed(KEY_R)): get_tree().change_scene_to_file("res://Editor.tscn")
 	pass
 
@@ -214,3 +218,12 @@ func draw_test_pattern() -> void:
 	fill_rect(70, 20, 40, 40, 3)  # Blue Square
 	fill_rect(120, 20, 40, 40, 5) # Yellow Square
 	fill_rect(170, 20, 40, 40, 6) # Brown Square
+	
+	
+	
+func load_sprite_from_file(file_path: String, sprite_index: int):
+	if FileAccess.file_exists(file_path):
+		var buffer = FileAccess.get_file_as_bytes(file_path)
+		var start_address = SpriteStart + (sprite_index * SpriteSize)
+		for i in range(32):
+			ram[start_address + i] = buffer[i]			
