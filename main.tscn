@@ -1,11 +1,17 @@
 [gd_scene format=3 uid="uid://dc8npbms3xwpb"]
 
 [ext_resource type="Script" uid="uid://cdwiustr6854f" path="res://Scripts/hardware.gd" id="1_ig7tw"]
+[ext_resource type="Script" uid="uid://b7un0246qxtr2" path="res://Scripts/cpu.gd" id="2_0xm2m"]
 
-[node name="Node2D" type="Node2D" unique_id=1655598913]
+[node name="Node2D" type="Node2D" unique_id=1655598913 node_paths=PackedStringArray("Screen")]
 script = ExtResource("1_ig7tw")
+Screen = NodePath("TextureRect")
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=1261296069]
 texture_filter = 1
 offset_right = 2400.0
 offset_bottom = 1600.0
+
+[node name="CPU" type="Node" parent="." unique_id=1222848467]
+script = ExtResource("2_0xm2m")
+hardware = ExtResource("1_ig7tw")

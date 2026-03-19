@@ -1,7 +1,6 @@
 extends Node
 
-var ram = PackedByteArray()
-var Screen: TextureRect
+@export var Screen: TextureRect
 
 const VramStart = 0x000
 const VramEnd = 0x4B00
@@ -20,21 +19,19 @@ var player_y = 65
 var wrapping_enabled: bool = true
 
 
+
+
 func _ready() -> void:
-	ram.resize(65536)
-	ram.fill(0)
+	Globals.ram.resize(65536)
+	Globals.ram.fill(0)
 	SetDefaultPallete()
 	img = Image.create(240, 160, false, Image.FORMAT_RGB8)
 	texture = ImageTexture.create_from_image(img)
-	Screen = get_node("TextureRect")
+	Screen.texture = texture
 	print("Screen value: ", Screen)
 	print("Screen is null: ", Screen == null)
-	Screen.texture = texture
 	draw_test_pattern()
-	Input_byte = ram[InputAddr]
-	for i in range(32):
-		ram[SpriteStart + i] = 0x11 # Fill with Red (Color 1)
-		ram[SpriteStart + 12] = 0x15     # Add a Yellow dot (Color 5) in the middle
+	Input_byte = Globals.ram[InputAddr]
 
 
 
@@ -53,7 +50,7 @@ func SetDefaultPallete() -> void:
 		[255, 0, 0],     
 		[0, 255, 0],     
 		[0, 0, 255],     
-		[150,150,0],
+		[150,0,150],
 		[230,201,137], #Yellow
 		[160,80,60], #Brown
 		[255, 204, 170], # peach
@@ -68,9 +65,9 @@ func SetDefaultPallete() -> void:
 	]
 	for i in colors.size():
 		var base_address = PalleteStart + (i * 3)
-		ram[base_address] = colors[i][0]
-		ram[base_address + 1] = colors[i][1]
-		ram[base_address + 2] = colors[i][2]
+		Globals.ram[base_address] = colors[i][0]
+		Globals.ram[base_address + 1] = colors[i][1]
+		Globals.ram[base_address + 2] = colors[i][2]
 	
 	pass
 	
@@ -80,7 +77,7 @@ func WritePixel(x: int, y: int, ColorIndex: int) -> void:
 		y = y % 160
 	var pixel_index = y * 240 + x
 	var byte_index = pixel_index / 2
-	var current_byte = ram[byte_index]
+	var current_byte = Globals.ram[byte_index]
 	
 	if pixel_index % 2 == 0:
 		#Left pixel 
@@ -93,7 +90,7 @@ func WritePixel(x: int, y: int, ColorIndex: int) -> void:
 		current_byte &= 0xF0
 		var new_color = ColorIndex
 		current_byte |= new_color
-	ram[byte_index] = current_byte
+	Globals.ram[byte_index] = current_byte
 	
 	pass
 
@@ -101,7 +98,7 @@ func WritePixel(x: int, y: int, ColorIndex: int) -> void:
 func update_display():
 	
 	for i in range(19200):
-		var current_byte = ram[VramStart + i]
+		var current_byte = Globals.ram[VramStart + i]
 		
 		
 		var pixel_index_left = i * 2
@@ -130,10 +127,11 @@ func _process(delta: float) -> void:
 	if Input_byte & 0x04: player_x -= 1 # LEFT (Bit 2)
 	if Input_byte & 0x08: player_x += 1 # RIGHT (Bit 3)
 	draw_test_pattern() # Clear screen with background
-	draw_sprite(0, player_x, player_y) # Draw player sprite
 	load_sprite_from_file("user://save_sprite.dat", 1)
+	load_sprite_from_file("user://hello.dat", 2)
 	draw_sprite(1, player_x, player_y)
-	update_display() # Push RAM to texture
+	draw_sprite(2, 120, 120)
+	update_display()
 
 	if(Input.is_key_pressed(KEY_R)): get_tree().change_scene_to_file("res://Editor.tscn")
 	pass
@@ -163,14 +161,14 @@ func CheckInput():
 		Input_byte |= 0x20
 	else:
 		Input_byte &= ~0x20
-	ram[InputAddr] = Input_byte
+	Globals.ram[InputAddr] = Input_byte
 	
 
 func get_color_from_ram(ColorIndex: int) -> Color:
 	var base = PalleteStart + (ColorIndex * 3)
-	var red = ram[base] /255.0
-	var green = ram[base + 1] / 255.0
-	var blue = ram[base + 2] / 255.0
+	var red = Globals.ram[base] /255.0
+	var green = Globals.ram[base + 1] / 255.0
+	var blue = Globals.ram[base + 2] / 255.0
 	return Color(red,green,blue)
 	
 	
@@ -182,7 +180,7 @@ func draw_sprite(index: int, screen_x: int, screen_y: int) -> void:
 		
 		# Each byte has 2 pixels, find the right one
 		var byte_offset = i / 2
-		var current_byte = ram[base_addr + byte_offset]
+		var current_byte = Globals.ram[base_addr + byte_offset]
 		var color_idx: int
 		
 		if i % 2 == 0:
@@ -226,4 +224,4 @@ func load_sprite_from_file(file_path: String, sprite_index: int):
 		var buffer = FileAccess.get_file_as_bytes(file_path)
 		var start_address = SpriteStart + (sprite_index * SpriteSize)
 		for i in range(32):
-			ram[start_address + i] = buffer[i]			
+			Globals.ram[start_address + i] = buffer[i]			

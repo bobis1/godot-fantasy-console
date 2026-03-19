@@ -1,10 +1,14 @@
 extends Control
 
 var grid_size = 8
-var sprite_data = [] # Holds 64 integers (0-15)
-var current_color_index = 1 # What the user is currently "holding" (e.g., 1 = black)
+var sprite_data = [] 
+var current_color_index = 1 
 
-# Your console's 16 fixed colors. Index 0 is often transparent.
+
+
+var spriteName: String
+@export var NamingPopup: Control
+
 var palette = [
 	Color8(0, 0, 0, 0),     
 	Color8(255, 0, 0),       # 1: Red
@@ -25,12 +29,10 @@ var palette = [
 ]
 
 func _ready():
-	# Initialize our fantasy memory block with 0s (transparent)
 	sprite_data.resize(grid_size * grid_size)
 	sprite_data.fill(0) 
 
 func _gui_input(event):
-	# Paint when left-clicking or dragging
 	if event is InputEventMouseButton or event is InputEventMouseMotion:
 		if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 			_paint_pixel(event.position)
@@ -150,7 +152,7 @@ func _on_teal_pressed() -> void:
 
 
 func _on_save_pressed() -> void:
-	save_to_file(get_sprite_as_buffer())
+	save_to_file()
 	pass
 	
 	
@@ -165,11 +167,20 @@ func get_sprite_as_buffer() -> PackedByteArray:
 		
 	return buffer
 	
-func save_to_file(content):
-	var file = FileAccess.open("user://save_sprite.dat", FileAccess.WRITE)
-	file.store_buffer(content)
+func save_to_file():
+	NamingPopup.visible = true
+	
+
 
 
 func _on_back_pressed() -> void:
 	get_tree().change_scene_to_file("res://main.tscn")
 	pass 
+
+
+func _on_line_edit_text_submitted(new_text: String) -> void:
+	spriteName = new_text
+	var file = FileAccess.open("user://"+spriteName+".dat", FileAccess.WRITE)
+	file.store_buffer(get_sprite_as_buffer())
+	pass
+	

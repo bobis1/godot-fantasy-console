@@ -102,13 +102,14 @@ text = "Mauve"
 layout_mode = 2
 text = "Teal"
 
-[node name="ColorRect" type="ColorRect" parent="Control" unique_id=1824463377]
+[node name="ColorRect" type="ColorRect" parent="Control" unique_id=1824463377 node_paths=PackedStringArray("NamingPopup")]
 layout_mode = 0
 offset_top = 151.0
 offset_right = 40.0
 offset_bottom = 191.0
 scale = Vector2(20, 20)
 script = ExtResource("2_1qsck")
+NamingPopup = NodePath("../../NamingPopup")
 
 [node name="Save" type="Button" parent="Control" unique_id=4781677]
 layout_mode = 0
@@ -120,12 +121,27 @@ text = "Save"
 
 [node name="Back" type="Button" parent="Control" unique_id=312809416]
 layout_mode = 0
-offset_left = 407.0
+offset_left = 404.0
 offset_top = 64.0
-offset_right = 452.0
+offset_right = 449.0
 offset_bottom = 95.0
 text = "Back
 "
+
+[node name="NamingPopup" type="Control" parent="." unique_id=1938953504]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="LineEdit" type="LineEdit" parent="NamingPopup" unique_id=534407082]
+layout_mode = 0
+offset_left = 1035.0
+offset_top = 412.0
+offset_right = 1435.0
+offset_bottom = 443.0
+placeholder_text = "Name the sprite"
 
 [connection signal="pressed" from="Control/Color Select/Black" to="Control/ColorRect" method="_on_black_pressed"]
 [connection signal="pressed" from="Control/Color Select/Red" to="Control/ColorRect" method="_on_red_pressed"]
@@ -145,3 +161,4 @@ text = "Back
 [connection signal="pressed" from="Control/Color Select/Teal" to="Control/ColorRect" method="_on_teal_pressed"]
 [connection signal="pressed" from="Control/Save" to="Control/ColorRect" method="_on_save_pressed"]
 [connection signal="pressed" from="Control/Back" to="Control/ColorRect" method="_on_back_pressed"]
+[connection signal="text_submitted" from="NamingPopup/LineEdit" to="Control/ColorRect" method="_on_line_edit_text_submitted"]
