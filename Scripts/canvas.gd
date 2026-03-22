@@ -178,9 +178,15 @@ func _on_back_pressed() -> void:
 	pass 
 
 
+
 func _on_line_edit_text_submitted(new_text: String) -> void:
 	spriteName = new_text
 	var file = FileAccess.open("user://"+spriteName+".dat", FileAccess.WRITE)
 	file.store_buffer(get_sprite_as_buffer())
 	pass
 	
+
+
+func _on_scripting_pressed() -> void:
+	get_tree().change_scene_to_file("res://Scripting.tscn")
+	pass
