@@ -1,12 +1,13 @@
 extends Node
 
 @export var Screen: TextureRect
-
+@export var CPU: Node
 const VramStart = 0x000
 const VramEnd = 0x4B00
 const PalleteStart = 0x4B01
 const InputAddr = 0x4B31
 const SpriteStart = 0x4B32
+const InstructionStart = 0x5000
 const SpriteSize = 32
 
 var Input_byte
@@ -22,9 +23,11 @@ var wrapping_enabled: bool = true
 
 
 func _ready() -> void:
-	Globals.ram.resize(65536)
-	Globals.ram.fill(0)
-	SetDefaultPallete()
+	if !Globals.IsRamInit:
+			Globals.ram.resize(65536)
+			Globals.ram.fill(0)
+			Globals.IsRamInit = true
+			SetDefaultPallete()
 	img = Image.create(240, 160, false, Image.FORMAT_RGB8)
 	texture = ImageTexture.create_from_image(img)
 	Screen.texture = texture
@@ -32,6 +35,7 @@ func _ready() -> void:
 	print("Screen is null: ", Screen == null)
 	draw_test_pattern()
 	Input_byte = Globals.ram[InputAddr]
+	Globals.pc = InstructionStart
 
 
 
@@ -131,10 +135,16 @@ func _process(delta: float) -> void:
 	load_sprite_from_file("user://hello.dat", 2)
 	draw_sprite(1, player_x, player_y)
 	draw_sprite(2, 120, 120)
+	draw_sprite(1, 200, 200)
+	CPU.run_cpu()
 	update_display()
+	
 
 	if(Input.is_key_pressed(KEY_R)): get_tree().change_scene_to_file("res://Editor.tscn")
 	pass
+	#draw_test_pattern()
+	#Globals.ram[0] = 0x11 # This should make the first two pixels Red (Color 1)
+	#update_display()
 
 func CheckInput():
 	if Input.is_action_pressed("UP"):
