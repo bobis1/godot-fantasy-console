@@ -12,7 +12,8 @@ enum {
 	ADD, #Adds two registers
 	SUB, 
 	JMP,
-	SPR
+	SPR,
+	IF
 }
 
 var instruction = PackedByteArray([0, 0, 0, 0])
@@ -70,6 +71,11 @@ func run_cpu():
 			SPR:
 				spr(Globals.ram[Globals.pc + 1], Globals.ram[Globals.pc + 2], Globals.ram[Globals.pc + 3])
 				Globals.pc += 4
+			IF:
+				if (Globals.ram[Globals.pc + 1] == Globals.ram[Globals.pc + 2]):
+					Globals.pc += Globals.ram[Globals.pc + 3]
+				else :
+					Globals.pc += 4
 			_:
 				print("Unknown opcode: ", opcode, " at PC: ", Globals.pc)
 				Globals.pc += 1 
@@ -117,6 +123,11 @@ func compile(source_code: String) -> PackedByteArray:
 				bytecode.append(tokens[1].to_int() % 256)
 			"SPR":
 				bytecode.append(SPR)
+				bytecode.append(tokens[1].to_int())
+				bytecode.append(tokens[2].to_int())
+				bytecode.append(tokens[3].to_int())
+			"IF":
+				bytecode.append(IF)
 				bytecode.append(tokens[1].to_int())
 				bytecode.append(tokens[2].to_int())
 				bytecode.append(tokens[3].to_int())

@@ -190,3 +190,18 @@ func _on_line_edit_text_submitted(new_text: String) -> void:
 func _on_scripting_pressed() -> void:
 	get_tree().change_scene_to_file("res://Scripting.tscn")
 	pass
+
+
+func _on_fill_pressed() -> void:
+	
+	pass
+
+
+func _on_undo_pressed() -> void:
+	
+	pass
+
+
+func _on_redo_pressed() -> void:
+	
+	pass
