@@ -133,41 +133,32 @@ offset_bottom = 95.0
 text = "Back
 "
 
-[node name="Scripting" type="Button" parent="Control" unique_id=1062963334]
-layout_mode = 0
-offset_left = 459.0
-offset_top = 101.0
-offset_right = 512.0
-offset_bottom = 132.0
-text = "Script"
-
-[node name="Fill" type="Button" parent="Control" unique_id=2112511374]
-layout_mode = 0
-offset_left = 409.0
-offset_top = 25.0
-offset_right = 439.0
-offset_bottom = 56.0
-text = "Fill"
-
 [node name="Undo" type="Button" parent="Control" unique_id=628832824]
 layout_mode = 0
-offset_left = 466.0
+offset_left = 406.0
 offset_top = 25.0
-offset_right = 516.0
+offset_right = 456.0
 offset_bottom = 56.0
 text = "Undo
 "
 
 [node name="Redo" type="Button" parent="Control" unique_id=1217750806]
 layout_mode = 0
-offset_left = 523.0
+offset_left = 466.0
 offset_top = 24.0
-offset_right = 571.0
+offset_right = 514.0
 offset_bottom = 55.0
 text = "Redo"
 
+[node name="Scripting" type="Button" parent="Control" unique_id=1062963334]
+layout_mode = 0
+offset_left = 459.0
+offset_top = 70.0
+offset_right = 512.0
+offset_bottom = 101.0
+text = "Script"
+
 [node name="NamingPopup" type="Control" parent="." unique_id=1938953504]
-visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
@@ -180,6 +171,14 @@ offset_top = 412.0
 offset_right = 1435.0
 offset_bottom = 443.0
 placeholder_text = "Name the sprite"
+
+[node name="SpriteIndex" type="LineEdit" parent="NamingPopup" unique_id=262700467]
+layout_mode = 0
+offset_left = 1035.0
+offset_top = 375.0
+offset_right = 1435.0
+offset_bottom = 406.0
+placeholder_text = "Sprite Index"
 
 [connection signal="pressed" from="Control/Color Select/Black" to="Control/ColorRect" method="_on_black_pressed"]
 [connection signal="pressed" from="Control/Color Select/Red" to="Control/ColorRect" method="_on_red_pressed"]
@@ -199,8 +198,8 @@ placeholder_text = "Name the sprite"
 [connection signal="pressed" from="Control/Color Select/Teal" to="Control/ColorRect" method="_on_teal_pressed"]
 [connection signal="pressed" from="Control/Save" to="Control/ColorRect" method="_on_save_pressed"]
 [connection signal="pressed" from="Control/Back" to="Control/ColorRect" method="_on_back_pressed"]
-[connection signal="pressed" from="Control/Scripting" to="Control/ColorRect" method="_on_scripting_pressed"]
-[connection signal="pressed" from="Control/Fill" to="Control/ColorRect" method="_on_fill_pressed"]
 [connection signal="pressed" from="Control/Undo" to="Control/ColorRect" method="_on_undo_pressed"]
 [connection signal="pressed" from="Control/Redo" to="Control/ColorRect" method="_on_redo_pressed"]
+[connection signal="pressed" from="Control/Scripting" to="Control/ColorRect" method="_on_scripting_pressed"]
 [connection signal="text_submitted" from="NamingPopup/LineEdit" to="Control/ColorRect" method="_on_line_edit_text_submitted"]
+[connection signal="text_submitted" from="NamingPopup/SpriteIndex" to="Control/ColorRect" method="_on_sprite_index_text_submitted"]

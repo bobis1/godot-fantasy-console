@@ -1,16 +1,21 @@
 extends Control
 
 var grid_size = 8
-var sprite_data = [] 
-var current_color_index = 1 
+var sprite_data = []
+var current_color_index = 1
 
+var VersionCount = 0
 
+var SpriteIndex: int
+
+var isIndexSubmitted: bool
+var isNameSubmitted: bool
 
 var spriteName: String
 @export var NamingPopup: Control
 
 var palette = [
-	Color8(0, 0, 0, 0),     
+	Color8(0, 0, 0, 0),
 	Color8(255, 0, 0),       # 1: Red
 	Color8(0, 255, 0),       # 2: Green
 	Color8(0, 0, 255),       # 3: Blue
@@ -48,6 +53,9 @@ func _paint_pixel(mouse_pos: Vector2):
 		
 		if sprite_data[index] != current_color_index:
 			sprite_data[index] = current_color_index
+			VersionCount += 1
+			var file = FileAccess.open("user://Versions" + spriteName + str(VersionCount) +".dat", FileAccess.WRITE)
+			file.store_buffer(get_sprite_as_buffer())
 			queue_redraw()
 
 func _draw():
@@ -116,13 +124,13 @@ func _on_lavender_pressed() -> void:
 
 func _on_light_gray_pressed() -> void:
 	current_color_index = 9
-	pass 
+	pass
 
 
 func _on_dark_gray_pressed() -> void:
 	current_color_index = 10
 	pass
-	
+
 
 
 func _on_dark_blue_pressed() -> void:
@@ -167,9 +175,19 @@ func get_sprite_as_buffer() -> PackedByteArray:
 		
 	return buffer
 	
+	
+func load_sprite_from_buffer(buffer: PackedByteArray) -> void:
+	for i in range(32):
+		var pixel_right = buffer[i] & 0x0F
+		var pixel_left = (buffer[i] >> 4) & 0x0F
+		sprite_data[i * 2] = pixel_left
+		sprite_data[i * 2 + 1] = pixel_right
+	queue_redraw()
+
+
 func save_to_file():
 	NamingPopup.visible = true
-	
+
 
 
 
@@ -183,8 +201,12 @@ func _on_line_edit_text_submitted(new_text: String) -> void:
 	spriteName = new_text
 	var file = FileAccess.open("user://"+spriteName+".dat", FileAccess.WRITE)
 	file.store_buffer(get_sprite_as_buffer())
+	isNameSubmitted = true
+	if isIndexSubmitted && isNameSubmitted:
+			NamingPopup.visible = false
+
 	pass
-	
+
 
 
 func _on_scripting_pressed() -> void:
@@ -192,16 +214,30 @@ func _on_scripting_pressed() -> void:
 	pass
 
 
-func _on_fill_pressed() -> void:
-	
-	pass
 
 
 func _on_undo_pressed() -> void:
-	
+	if VersionCount == 1:
+		return
+	VersionCount -= 1
+	var lastVersionFile = FileAccess.open("user://Versions"+spriteName+ str(VersionCount) +".dat", FileAccess.READ)
+	var lastVersion = lastVersionFile.get_buffer(32)
+	load_sprite_from_buffer(lastVersion)
+	lastVersionFile.close()
+
 	pass
 
 
 func _on_redo_pressed() -> void:
-	
+	VersionCount += 1
+	var redoVersionFile = FileAccess.open("user://Versions"+spriteName+ str(VersionCount) +".dat", FileAccess.READ)
+	var redoVersion = redoVersionFile.get_buffer(32)
+	load_sprite_from_buffer(redoVersion)
+	redoVersionFile.close()
+	pass
+
+
+func _on_sprite_index_text_submitted(new_text: String) -> void:
+	SpriteIndex = new_text.to_int()
+	isIndexSubmitted = true
 	pass
