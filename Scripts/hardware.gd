@@ -19,6 +19,8 @@ var player_y = 65
 
 var wrapping_enabled: bool = true
 
+var dir = DirAccess.open("user://")
+
 
 
 
@@ -36,6 +38,10 @@ func _ready() -> void:
 	draw_test_pattern()
 	Input_byte = Globals.ram[InputAddr]
 	Globals.pc = InstructionStart
+	if dir == null: print("Could not open folder"); return
+	dir.list_dir_begin()
+
+
 
 
 
@@ -51,9 +57,9 @@ func SetDefaultPallete() -> void:
 	#Think about color pallete later aswell
 	var colors = [
 		[0, 0, 0],
-		[255, 0, 0],     
-		[0, 255, 0],     
-		[0, 0, 255],     
+		[255, 0, 0],
+		[0, 255, 0],
+		[0, 0, 255],
 		[150,0,150],
 		[230,201,137], #Yellow
 		[160,80,60], #Brown
@@ -100,15 +106,12 @@ func WritePixel(x: int, y: int, ColorIndex: int) -> void:
 
 
 func update_display():
-	
 	for i in range(19200):
 		var current_byte = Globals.ram[VramStart + i]
-		
-		
+
 		var pixel_index_left = i * 2
 		var pixel_index_right = (i * 2) + 1
 		var color_idx_left =  current_byte >> 4
-		
 		var x_left = pixel_index_left % 240
 		var y_left = pixel_index_left / 240
 		img.set_pixel(x_left, y_left, get_color_from_ram(color_idx_left))
@@ -123,9 +126,8 @@ func update_display():
 
 
 func _process(delta: float) -> void:
-	update_display()	
+	update_display()
 	CheckInput()
-	
 	if Input_byte & 0x01: player_y -= 1 # UP (Bit 0)
 	if Input_byte & 0x02: player_y += 1 # DOWN (Bit 1)
 	if Input_byte & 0x04: player_x -= 1 # LEFT (Bit 2)
@@ -136,9 +138,23 @@ func _process(delta: float) -> void:
 	draw_sprite(1, player_x, player_y)
 	draw_sprite(2, 120, 120)
 	draw_sprite(1, 200, 200)
+	draw_sprite(3, 120,120)
 	CPU.run_cpu()
 	update_display()
-	
+	if !Globals.isLoaded:
+		for file: String in dir.get_files():
+			var resource = dir.get_current_dir() + "/" + file
+			var sprite_index = file.to_int()
+			if Globals.wantCleared:
+				dir.remove(resource)
+				print(resource + "Removed")
+				pass
+			load_sprite_from_file(resource, sprite_index)
+			print(resource)
+			
+
+		Globals.isLoaded = true
+
 
 	if(Input.is_key_pressed(KEY_R)): get_tree().change_scene_to_file("res://Editor.tscn")
 	pass
@@ -226,12 +242,11 @@ func draw_test_pattern() -> void:
 	fill_rect(70, 20, 40, 40, 3)  # Blue Square
 	fill_rect(120, 20, 40, 40, 5) # Yellow Square
 	fill_rect(170, 20, 40, 40, 6) # Brown Square
-	
-	
-	
+
+
 func load_sprite_from_file(file_path: String, sprite_index: int):
 	if FileAccess.file_exists(file_path):
 		var buffer = FileAccess.get_file_as_bytes(file_path)
 		var start_address = SpriteStart + (sprite_index * SpriteSize)
 		for i in range(32):
-			Globals.ram[start_address + i] = buffer[i]			
+			Globals.ram[start_address + i] = buffer[i]

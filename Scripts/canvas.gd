@@ -162,8 +162,8 @@ func _on_teal_pressed() -> void:
 func _on_save_pressed() -> void:
 	save_to_file()
 	pass
-	
-	
+
+
 func get_sprite_as_buffer() -> PackedByteArray:
 	var buffer = PackedByteArray()
 	buffer.resize(32) 
@@ -199,8 +199,9 @@ func _on_back_pressed() -> void:
 
 func _on_line_edit_text_submitted(new_text: String) -> void:
 	spriteName = new_text
-	var file = FileAccess.open("user://"+spriteName+".dat", FileAccess.WRITE)
+	var file = FileAccess.open("user://"+ str(SpriteIndex) +spriteName+".dat", FileAccess.WRITE)
 	file.store_buffer(get_sprite_as_buffer())
+	Globals.isLoaded = false
 	isNameSubmitted = true
 	if isIndexSubmitted && isNameSubmitted:
 			NamingPopup.visible = false
@@ -237,7 +238,13 @@ func _on_redo_pressed() -> void:
 	pass
 
 
-func _on_sprite_index_text_submitted(new_text: String) -> void:
+func _on_sprite_index_text_submitted() -> void:
+	if isIndexSubmitted && isNameSubmitted:
+		NamingPopup.visible = false
+	pass
+
+
+func _on_sprite_index_text_changed(new_text: String) -> void:
 	SpriteIndex = new_text.to_int()
 	isIndexSubmitted = true
-	pass
+	pass # Replace with function body.

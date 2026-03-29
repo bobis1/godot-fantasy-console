@@ -202,4 +202,5 @@ placeholder_text = "Sprite Index"
 [connection signal="pressed" from="Control/Redo" to="Control/ColorRect" method="_on_redo_pressed"]
 [connection signal="pressed" from="Control/Scripting" to="Control/ColorRect" method="_on_scripting_pressed"]
 [connection signal="text_submitted" from="NamingPopup/LineEdit" to="Control/ColorRect" method="_on_line_edit_text_submitted"]
+[connection signal="text_changed" from="NamingPopup/SpriteIndex" to="Control/ColorRect" method="_on_sprite_index_text_changed"]
 [connection signal="text_submitted" from="NamingPopup/SpriteIndex" to="Control/ColorRect" method="_on_sprite_index_text_submitted"]
