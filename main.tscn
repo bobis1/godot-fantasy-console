@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cdwiustr6854f" path="res://Scripts/hardware.gd" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://b7un0246qxtr2" path="res://Scripts/cpu.gd" id="2_0xm2m"]
+[ext_resource type="Script" uid="uid://o01lpfrd0xw6" path="res://Scripts/interpreter.gd" id="3_h2yge"]
 
 [node name="Node2D" type="Node2D" unique_id=1655598913 node_paths=PackedStringArray("Screen", "CPU")]
 script = ExtResource("1_ig7tw")
@@ -16,3 +17,6 @@ offset_bottom = 1600.0
 [node name="CPU" type="Node" parent="." unique_id=1222848467 node_paths=PackedStringArray("hardware")]
 script = ExtResource("2_0xm2m")
 hardware = NodePath("..")
+
+[node name="Interpreter" type="Node" parent="." unique_id=877474934]
+script = ExtResource("3_h2yge")
