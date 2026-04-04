@@ -40,6 +40,8 @@ func _ready() -> void:
 	Globals.pc = InstructionStart
 	if dir == null: print("Could not open folder"); return
 	dir.list_dir_begin()
+	load_sprite_from_file("user://1save_sprite.dat", 1)
+	load_sprite_from_file("user://hello.dat", 2)
 
 
 
@@ -132,9 +134,8 @@ func _process(delta: float) -> void:
 	if Input_byte & 0x02: player_y += 1 # DOWN (Bit 1)
 	if Input_byte & 0x04: player_x -= 1 # LEFT (Bit 2)
 	if Input_byte & 0x08: player_x += 1 # RIGHT (Bit 3)
-	draw_test_pattern() # Clear screen with background
-	load_sprite_from_file("user://save_sprite.dat", 1)
-	load_sprite_from_file("user://hello.dat", 2)
+	draw_test_pattern()
+
 	draw_sprite(1, player_x, player_y)
 	draw_sprite(2, 120, 120)
 	draw_sprite(1, 200, 200)
@@ -151,15 +152,13 @@ func _process(delta: float) -> void:
 				pass
 			load_sprite_from_file(resource, sprite_index)
 			print(resource)
-			
-
-		Globals.isLoaded = true
+			Globals.isLoaded = true
 
 
 	if(Input.is_key_pressed(KEY_R)): get_tree().change_scene_to_file("res://Editor.tscn")
 	pass
 	#draw_test_pattern()
-	#Globals.ram[0] = 0x11 # This should make the first two pixels Red (Color 1)
+	#Globals.ram[0] = 0x11
 	#update_display()
 
 func CheckInput():

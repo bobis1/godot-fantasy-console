@@ -2,7 +2,7 @@ extends Node
 
 @export var hardware: Node
 
-
+# Second priority get cartridges done first.
 
 func execute(userCode: String):
 	var script = GDScript.new()

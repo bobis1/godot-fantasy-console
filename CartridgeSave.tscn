@@ -1,0 +1,91 @@
+[gd_scene format=3 uid="uid://b7q4y8f2fl2k4"]
+
+[ext_resource type="Script" uid="uid://cc2hqdlij14pr" path="res://Scripts/cartridgeSaveLoad.gd" id="1_qx6so"]
+
+[node name="CartridgeSave" type="Node2D" unique_id=9989981 node_paths=PackedStringArray("Naming", "errorDia", "SaveDia", "loadDia", "loading")]
+script = ExtResource("1_qx6so")
+Naming = NodePath("Control/Naming")
+errorDia = NodePath("Control/Error")
+SaveDia = NodePath("Control/Naming/FileDialog")
+loadDia = NodePath("Control/Loading/FileDialog")
+loading = NodePath("Control/Loading")
+
+[node name="Control" type="Control" parent="." unique_id=1557582881]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Save" type="Button" parent="Control" unique_id=1080571788]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 50.0
+offset_bottom = 37.0
+scale = Vector2(3, 3)
+text = "Save"
+
+[node name="Load" type="Button" parent="Control" unique_id=199477775]
+layout_mode = 0
+offset_left = 7.0000005
+offset_top = 121.0
+offset_right = 53.0
+offset_bottom = 152.0
+scale = Vector2(3, 3)
+text = "Load"
+
+[node name="Naming" type="Control" parent="Control" unique_id=2099387408]
+visible = false
+anchors_preset = 0
+offset_left = 2.0
+offset_top = -1.0
+offset_right = 42.0
+offset_bottom = 39.0
+
+[node name="FileDialog" type="FileDialog" parent="Control/Naming" unique_id=334432803]
+oversampling_override = 1.0
+title = "Open a Directory"
+position = Vector2i(0, 36)
+file_mode = 2
+access = 2
+
+[node name="LineEdit" type="LineEdit" parent="Control/Naming" unique_id=1941701893]
+layout_mode = 0
+offset_left = -4.0
+offset_top = 402.0
+offset_right = 496.0
+offset_bottom = 433.0
+placeholder_text = "Name"
+
+[node name="Error" type="Control" parent="Control" unique_id=2117266696]
+visible = false
+anchors_preset = 0
+offset_left = 161.0
+offset_top = 297.00003
+offset_right = 201.0
+offset_bottom = 337.00003
+scale = Vector2(5, 5)
+
+[node name="Label" type="Label" parent="Control/Error" unique_id=1638902587]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Could not be saved make sure that all your names inputed"
+
+[node name="Loading" type="Control" parent="Control" unique_id=1638603983]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="FileDialog" type="FileDialog" parent="Control/Loading" unique_id=842586970]
+title = "Open a File"
+file_mode = 0
+access = 2
+
+[connection signal="pressed" from="Control/Save" to="." method="_on_save_pressed"]
+[connection signal="pressed" from="Control/Load" to="." method="_on_load_pressed"]
+[connection signal="confirmed" from="Control/Naming/FileDialog" to="." method="_on_file_dialog_confirmed"]
+[connection signal="dir_selected" from="Control/Naming/FileDialog" to="." method="_on_file_dialog_dir_selected"]
+[connection signal="text_submitted" from="Control/Naming/LineEdit" to="." method="_on_line_edit_text_submitted"]
+[connection signal="file_selected" from="Control/Loading/FileDialog" to="." method="_on_file_dialog_file_selected"]

@@ -4,15 +4,23 @@ var grid_size = 8
 var sprite_data = []
 var current_color_index = 1
 
+var history = []
+var history_index = -1
+
 var VersionCount = 0
 
 var SpriteIndex: int
+var loadingIndexInputted: bool = false
 
 var isIndexSubmitted: bool
 var isNameSubmitted: bool
 
 var spriteName: String
+var loadingIndex: int
+var loadingPath: String
 @export var NamingPopup: Control
+@export var LoadingFileDialouge: FileDialog
+@export var LoadingPopup: Control
 
 var palette = [
 	Color8(0, 0, 0, 0),
@@ -54,9 +62,10 @@ func _paint_pixel(mouse_pos: Vector2):
 		if sprite_data[index] != current_color_index:
 			sprite_data[index] = current_color_index
 			VersionCount += 1
-			var file = FileAccess.open("user://Versions" + spriteName + str(VersionCount) +".dat", FileAccess.WRITE)
-			file.store_buffer(get_sprite_as_buffer())
+			#var file = FileAccess.open("user://Versions" + spriteName + str(VersionCount) +".dat", FileAccess.WRITE)
+			#file.store_buffer(get_sprite_as_buffer())
 			queue_redraw()
+			_add_to_history(get_sprite_as_buffer())
 
 func _draw():
 	var cell_size = size.x / grid_size
@@ -199,12 +208,17 @@ func _on_back_pressed() -> void:
 
 func _on_line_edit_text_submitted(new_text: String) -> void:
 	spriteName = new_text
-	var file = FileAccess.open("user://"+ str(SpriteIndex) +spriteName+".dat", FileAccess.WRITE)
-	file.store_buffer(get_sprite_as_buffer())
-	Globals.isLoaded = false
-	isNameSubmitted = true
-	if isIndexSubmitted && isNameSubmitted:
-			NamingPopup.visible = false
+	#var file = FileAccess.open("user://"+ str(SpriteIndex) +spriteName+".dat", FileAccess.WRITE)
+	#file.store_buffer(get_sprite_as_buffer())
+	#sprite_data.append_array(get_sprite_as_buffer())
+	#Globals.isLoaded = false
+	#isNameSubmitted = true
+	#if isIndexSubmitted && isNameSubmitted:
+			#NamingPopup.visible = false
+	var packedSprite = get_sprite_as_buffer()
+	var start = SpriteIndex * 32
+	for i in range(32):
+		Globals.ram[start + 0x4B32 + i] = packedSprite[i]
 
 	pass
 
@@ -218,23 +232,16 @@ func _on_scripting_pressed() -> void:
 
 
 func _on_undo_pressed() -> void:
-	if VersionCount == 1:
-		return
-	VersionCount -= 1
-	var lastVersionFile = FileAccess.open("user://Versions"+spriteName+ str(VersionCount) +".dat", FileAccess.READ)
-	var lastVersion = lastVersionFile.get_buffer(32)
-	load_sprite_from_buffer(lastVersion)
-	lastVersionFile.close()
-
+	if history_index > 0:
+		history_index -= 1
+		load_sprite_from_buffer(history[history_index])
 	pass
 
 
 func _on_redo_pressed() -> void:
-	VersionCount += 1
-	var redoVersionFile = FileAccess.open("user://Versions"+spriteName+ str(VersionCount) +".dat", FileAccess.READ)
-	var redoVersion = redoVersionFile.get_buffer(32)
-	load_sprite_from_buffer(redoVersion)
-	redoVersionFile.close()
+	if history_index < history.size() - 1:
+		history_index += 1
+		load_sprite_from_buffer(history[history_index])
 	pass
 
 
@@ -247,4 +254,54 @@ func _on_sprite_index_text_submitted() -> void:
 func _on_sprite_index_text_changed(new_text: String) -> void:
 	SpriteIndex = new_text.to_int()
 	isIndexSubmitted = true
-	pass # Replace with function body.
+	pass
+
+
+func _on_cartridge_pressed() -> void:
+	get_tree().change_scene_to_file("res://CartridgeSave.tscn")
+	pass
+
+
+func _on_load_pressed() -> void:
+	LoadingPopup.visible = true
+	LoadingFileDialouge.popup_centered()
+	pass 
+
+
+func _on_loading_index_line_text_submitted(new_text: String) -> void:
+	loadingIndex = new_text.to_int()
+	load_sprite_from_buffer(Globals.spriteData.slice(loadingIndex*32, (loadingIndex*32)+32))
+	isIndexSubmitted = true
+	pass 
+
+
+func _on_file_dialog_file_selected(path: String) -> void:
+	loadingPath = path
+	if isIndexSubmitted:
+		var file = FileAccess.open(loadingPath, FileAccess.READ)
+		var fileLoadedSprite = file.get_buffer(32)
+		load_sprite_from_buffer(fileLoadedSprite)
+		file.close()
+	pass
+
+
+func _on_loadfrom_file_pressed() -> void:
+	pass
+
+
+func _on_clear_pressed() -> void:
+	sprite_data.resize(grid_size * grid_size)
+	sprite_data.fill(0)
+	queue_redraw()
+	var start = SpriteIndex * 32
+	for i in range(32):
+		Globals.ram[start + i + 0x4B32] = 0
+	pass
+	
+	
+func _add_to_history(current_version: PackedByteArray):
+	if history_index < history.size() - 1:
+		history = history.slice(0, history_index + 1)
+	
+	history.append(current_version)
+	history_index += 1

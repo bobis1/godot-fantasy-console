@@ -13,7 +13,8 @@ enum {
 	SUB, 
 	JMP,
 	SPR,
-	IF
+	IF,
+	#SPRFromspriteData
 }
 
 var instruction = PackedByteArray([0, 0, 0, 0])
@@ -58,19 +59,23 @@ func run_cpu():
 				registers[Globals.ram[Globals.pc + 1]] = registers[Globals.ram[Globals.pc + 2]]
 				Globals.pc += 3
 			WRITE:
-				Globals.ram[Globals.pc + 1] = Globals.ram[Globals.pc + 2]
+				var addr = Globals.ram[Globals.pc + 1]
+				Globals.ram[addr] = Globals.ram[Globals.pc + 2]
 				Globals.pc += 4
 			ADD:
-				Globals.ram[Globals.pc + 1] += Globals.ram[Globals.pc + 2]
+				var addr = Globals.ram[Globals.pc + 1]
+				Globals.ram[addr] += Globals.ram[Globals.pc + 2]
 				Globals.pc += 3
 			SUB:
-				Globals.ram[Globals.pc + 1] = Globals.ram[Globals.pc + 1] - Globals.ram[Globals.pc + 2]
+				var addr = Globals.ram[Globals.pc + 1]
+				Globals.ram[addr] = Globals.ram[Globals.pc + 1] - Globals.ram[Globals.pc + 2]
 				Globals.pc += 5
 			JMP:
 				Globals.pc = (Globals.ram[Globals.pc + 1] * 256) + Globals.ram[Globals.pc + 2]
 			SPR:
 				spr(Globals.ram[Globals.pc + 1], Globals.ram[Globals.pc + 2], Globals.ram[Globals.pc + 3])
 				Globals.pc += 4
+				print("SPR run")
 			IF:
 				if (Globals.ram[Globals.pc + 1] == Globals.ram[Globals.pc + 2]):
 					Globals.pc += Globals.ram[Globals.pc + 3]
@@ -131,6 +136,7 @@ func compile(source_code: String) -> PackedByteArray:
 				bytecode.append(tokens[1].to_int())
 				bytecode.append(tokens[2].to_int())
 				bytecode.append(tokens[3].to_int())
+			
 	print("Bytecode length: ", bytecode.size())
 	print("Bytecode: ", bytecode)
 	return bytecode
