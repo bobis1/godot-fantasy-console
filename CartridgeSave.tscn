@@ -12,9 +12,13 @@ loading = NodePath("Control/Loading")
 
 [node name="Control" type="Control" parent="." unique_id=1557582881]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 1129.0
+offset_right = 1169.0
 offset_bottom = 40.0
+grow_horizontal = 2
 
 [node name="Save" type="Button" parent="Control" unique_id=1080571788]
 layout_mode = 0
@@ -33,6 +37,15 @@ offset_right = 53.0
 offset_bottom = 152.0
 scale = Vector2(3, 3)
 text = "Load"
+
+[node name="Back" type="Button" parent="Control" unique_id=543458956]
+layout_mode = 0
+offset_left = 7.0
+offset_top = 243.0
+offset_right = 53.0
+offset_bottom = 274.0
+scale = Vector2(3, 3)
+text = "Back"
 
 [node name="Naming" type="Control" parent="Control" unique_id=2099387408]
 visible = false
@@ -85,6 +98,7 @@ access = 2
 
 [connection signal="pressed" from="Control/Save" to="." method="_on_save_pressed"]
 [connection signal="pressed" from="Control/Load" to="." method="_on_load_pressed"]
+[connection signal="pressed" from="Control/Back" to="." method="_on_back_pressed"]
 [connection signal="confirmed" from="Control/Naming/FileDialog" to="." method="_on_file_dialog_confirmed"]
 [connection signal="dir_selected" from="Control/Naming/FileDialog" to="." method="_on_file_dialog_dir_selected"]
 [connection signal="text_submitted" from="Control/Naming/LineEdit" to="." method="_on_line_edit_text_submitted"]

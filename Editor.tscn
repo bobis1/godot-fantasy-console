@@ -152,14 +152,6 @@ offset_bottom = 99.0
 text = "Load
 "
 
-[node name="LoadfromFile" type="Button" parent="Control" unique_id=1668197728]
-layout_mode = 0
-offset_left = 545.0
-offset_top = 103.0
-offset_right = 664.0
-offset_bottom = 134.0
-text = "Load From file"
-
 [node name="Clear" type="Button" parent="Control" unique_id=23356754]
 layout_mode = 0
 offset_left = 576.0
@@ -191,30 +183,6 @@ offset_right = 1435.0
 offset_bottom = 406.0
 placeholder_text = "Sprite Index"
 
-[node name="LoadingPopup" type="Control" parent="." unique_id=796373230]
-visible = false
-layout_mode = 3
-anchors_preset = 0
-offset_left = 1141.0
-offset_top = 484.0
-offset_right = 1181.0
-offset_bottom = 524.0
-
-[node name="loadingIndexLine" type="LineEdit" parent="LoadingPopup" unique_id=1594458518]
-layout_mode = 0
-offset_top = 6.0
-offset_right = 68.5
-offset_bottom = 37.0
-text = "index"
-
-[node name="FileDialog" type="FileDialog" parent="LoadingPopup" unique_id=456250060]
-oversampling_override = 1.0
-title = "Open a File"
-position = Vector2i(0, 36)
-visible = true
-file_mode = 0
-access = 2
-
 [connection signal="pressed" from="Control/Color Select/Black" to="Control/ColorRect" method="_on_black_pressed"]
 [connection signal="pressed" from="Control/Color Select/Red" to="Control/ColorRect" method="_on_red_pressed"]
 [connection signal="pressed" from="Control/Color Select/Green" to="Control/ColorRect" method="_on_green_pressed"]
@@ -238,10 +206,7 @@ access = 2
 [connection signal="pressed" from="Control/Scripting" to="Control/ColorRect" method="_on_scripting_pressed"]
 [connection signal="pressed" from="Control/Cartridge" to="Control/ColorRect" method="_on_cartridge_pressed"]
 [connection signal="pressed" from="Control/load" to="Control/ColorRect" method="_on_load_pressed"]
-[connection signal="pressed" from="Control/LoadfromFile" to="Control/ColorRect" method="_on_loadfrom_file_pressed"]
 [connection signal="pressed" from="Control/Clear" to="Control/ColorRect" method="_on_clear_pressed"]
 [connection signal="text_submitted" from="NamingPopup/LineEdit" to="Control/ColorRect" method="_on_line_edit_text_submitted"]
 [connection signal="text_changed" from="NamingPopup/SpriteIndex" to="Control/ColorRect" method="_on_sprite_index_text_changed"]
 [connection signal="text_submitted" from="NamingPopup/SpriteIndex" to="Control/ColorRect" method="_on_sprite_index_text_submitted"]
-[connection signal="text_submitted" from="LoadingPopup/loadingIndexLine" to="Control/ColorRect" method="_on_loading_index_line_text_submitted"]
-[connection signal="file_selected" from="LoadingPopup/FileDialog" to="Control/ColorRect" method="_on_file_dialog_file_selected"]

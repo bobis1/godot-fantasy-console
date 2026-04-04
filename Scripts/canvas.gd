@@ -270,7 +270,7 @@ func _on_load_pressed() -> void:
 
 func _on_loading_index_line_text_submitted(new_text: String) -> void:
 	loadingIndex = new_text.to_int()
-	load_sprite_from_buffer(Globals.spriteData.slice(loadingIndex*32, (loadingIndex*32)+32))
+	load_sprite_from_buffer(Globals.ram.slice(loadingIndex*32, (loadingIndex*32)+32))
 	isIndexSubmitted = true
 	pass 
 
