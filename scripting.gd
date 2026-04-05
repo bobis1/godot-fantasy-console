@@ -11,10 +11,11 @@ enum {
 	WRITE, #WRITE to ram
 	LOAD, # Get value from ram
 	ADD, #Adds two registers
-	SUB, 
+	SUB, # Subtracts two  registers
 	JMP,
 	SPR,
-	IF
+	IF,
+	MOV_V_R
 }
 
 # Called when the node enters the scene tree for the first time.
@@ -61,7 +62,8 @@ func compile(source_code: String) -> PackedByteArray:
 			"MOV_R_V":
 				bytecode.append(MOV_R_V)
 				bytecode.append(tokens[1].replace("R", "").to_int() )
-				bytecode.append(tokens[2].to_int())
+				bytecode.append(tokens[2].to_int() / 256)
+				bytecode.append(tokens[2].to_int() % 256)
 			"STOP":
 				bytecode.append(STOP)
 			"MOV_R_R":
@@ -72,33 +74,37 @@ func compile(source_code: String) -> PackedByteArray:
 				bytecode.append(WRITE)
 				bytecode.append(tokens[1].to_int() / 256)
 				bytecode.append(tokens[1].to_int() % 256)
-				bytecode.append(tokens[2].to_int())
+				bytecode.append(checkForRegister(tokens[2], bytecode))
 			"ADD":
 				bytecode.append(ADD)
 				bytecode.append(tokens[1].replace("R", "").to_int())
-				bytecode.append(tokens[2].replace("R", "").to_int())
+				bytecode.append(checkForRegister(tokens[2], bytecode))
 			"SUB":
 				bytecode.append(SUB)
-				bytecode.append(tokens[1].to_int() / 256)
-				bytecode.append(tokens[2].to_int() % 256)
-				bytecode.append(tokens[3].to_int() / 256)
-				bytecode.append(tokens[4].to_int() % 256)
+				bytecode.append(tokens[1].replace("R", "").to_int())
+				bytecode.append(checkForRegister(tokens[2], bytecode))
 			"JMP":
 				bytecode.append(JMP)
 				bytecode.append(tokens[1].to_int() / 256)
 				bytecode.append(tokens[1].to_int() % 256)
 			"SPR":
 				bytecode.append(SPR)
-				bytecode.append(tokens[1].to_int())
-				bytecode.append(tokens[2].to_int())
-				bytecode.append(tokens[3].to_int())
+				bytecode.append(checkForRegister(tokens[1], bytecode))
+				bytecode.append(checkForRegister(tokens[2], bytecode))
+				bytecode.append(checkForRegister(tokens[3], bytecode))
 			"IF":
 				bytecode.append(IF)
-				bytecode.append(tokens[1].to_int())
-				bytecode.append(tokens[2].to_int())
+				bytecode.append(checkForRegister(tokens[1], bytecode))
+				bytecode.append(checkForRegister(tokens[2], bytecode))
 				bytecode.append(tokens[3].to_int())
+			"MOV_V_R":
+				bytecode.append(MOV_V_R)
+				bytecode.append(tokens[1].replace("R", "").to_int())
+				bytecode.append(tokens[2].to_int() / 256)
+				bytecode.append(tokens[2].to_int() % 256)
+				
 	return bytecode
-
+ 
 
 func decompile(length: int) -> String:
 	var pc = 20480 # 0x5000
@@ -152,6 +158,13 @@ func decompile(length: int) -> String:
 				pc += 4
 	return assemblyText
 		
+
+func checkForRegister(token: String, bytecode: PackedByteArray) -> int:
+	if token.begins_with("R"):
+		bytecode.append(1)
+		return token.replace("R", "").to_int()
+	bytecode.append(0)
+	return token.to_int()
 
 func _on_back_pressed() -> void:
 	Globals.isRunning = false

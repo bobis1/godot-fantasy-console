@@ -130,16 +130,16 @@ func update_display():
 func _process(delta: float) -> void:
 	update_display()
 	CheckInput()
-	if Input_byte & 0x01: player_y -= 1 # UP (Bit 0)
-	if Input_byte & 0x02: player_y += 1 # DOWN (Bit 1)
-	if Input_byte & 0x04: player_x -= 1 # LEFT (Bit 2)
-	if Input_byte & 0x08: player_x += 1 # RIGHT (Bit 3)
+	#if Input_byte & 0x01: player_y -= 1 # UP (Bit 0)
+	#if Input_byte & 0x02: player_y += 1 # DOWN (Bit 1)
+	#if Input_byte & 0x04: player_x -= 1 # LEFT (Bit 2)
+	#if Input_byte & 0x08: player_x += 1 # RIGHT (Bit 3)
 	draw_test_pattern()
-
-	draw_sprite(1, player_x, player_y)
-	draw_sprite(2, 120, 120)
-	draw_sprite(1, 200, 200)
-	draw_sprite(3, 120,120)
+#
+	#draw_sprite(1, player_x, player_y)
+	#draw_sprite(2, 120, 120)
+	#draw_sprite(1, 200, 200)
+	#draw_sprite(3, 120,120)
 	CPU.run_cpu()
 	update_display()
 	if !Globals.isLoaded:
@@ -163,31 +163,19 @@ func _process(delta: float) -> void:
 
 func CheckInput():
 	if Input.is_action_pressed("UP"):
-		Input_byte |= 0x01
+		Globals.ram[InputAddr] = 1
+	elif Input.is_action_pressed("DOWN"):
+		Globals.ram[InputAddr] = 2
+	elif Input.is_action_pressed("LEFT"):
+		Globals.ram[InputAddr] = 3
+	elif Input.is_action_pressed("RIGHT"):
+		Globals.ram[InputAddr] = 4
+	elif Input.is_action_pressed("A"):
+		Globals.ram[InputAddr] = 5
+	elif Input.is_action_pressed("B"):
+		Globals.ram[InputAddr] = 6
 	else:
-		Input_byte &= ~0x01
-	if Input.is_action_pressed("DOWN"):
-		Input_byte |= 0x02
-	else:
-		Input_byte &= ~0x02
-	if Input.is_action_pressed("LEFT"):
-		Input_byte |= 0x04
-	else:
-		Input_byte &= ~0x04
-	if Input.is_action_pressed("RIGHT"):
-		Input_byte |= 0x08
-	else:
-		Input_byte &= ~0x08
-	if Input.is_action_pressed("A"):
-		Input_byte |= 0x10
-	else:
-		Input_byte &= ~0x10
-	if Input.is_action_pressed("B"):
-		Input_byte |= 0x20
-	else:
-		Input_byte &= ~0x20
-	Globals.ram[InputAddr] = Input_byte
-	
+		Globals.ram[InputAddr] = 0
 
 func get_color_from_ram(ColorIndex: int) -> Color:
 	var base = PalleteStart + (ColorIndex * 3)
