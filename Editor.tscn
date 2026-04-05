@@ -25,66 +25,81 @@ text = "Transparent"
 
 [node name="Red" type="Button" parent="Control/Color Select" unique_id=225891971]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.77489054, 0, 0, 1)
 text = "Red"
 
 [node name="Green" type="Button" parent="Control/Color Select" unique_id=1629499888]
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 1, 0, 1)
 text = "Green"
 
 [node name="Blue" type="Button" parent="Control/Color Select" unique_id=672725805]
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 1, 1)
 text = "Blue"
 
 [node name="Purple" type="Button" parent="Control/Color Select" unique_id=2125535759]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.5882353, 0, 0.5882353, 1)
 text = "Purple
 "
 
 [node name="Yellow" type="Button" parent="Control/Color Select" unique_id=1307727372]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.9019608, 0.7882353, 0.5372549, 1)
 text = "Yellow"
 
 [node name="Brown" type="Button" parent="Control/Color Select" unique_id=1103490542]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.627451, 0.3137255, 0.23529412, 1)
 text = "Brown"
 
 [node name="Peach" type="Button" parent="Control/Color Select" unique_id=1540615849]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0.6666667, 1)
 text = "Peach"
 
 [node name="Lavender" type="Button" parent="Control/Color Select" unique_id=382474521]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.5137255, 0.4627451, 0.6117647, 1)
 text = "Lavender"
 
 [node name="Light Gray" type="Button" parent="Control/Color Select" unique_id=235202830]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.7607843, 0.7647059, 0.78039217, 1)
 text = "Light Gray"
 
 [node name="Dark Gray" type="Button" parent="Control/Color Select" unique_id=1401865839]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.40784314, 0.4117647, 0.42745098, 1)
 text = "Dark Gray"
 
 [node name="Dark Blue" type="Button" parent="Control/Color Select" unique_id=899988570]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.11372549, 0.16862746, 0.3254902, 1)
 text = "Dark Blue"
 
 [node name="Dark Purple" type="Button" parent="Control/Color Select" unique_id=1177819336]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.49411765, 0.14509805, 0.3254902, 1)
 text = "Dark Purple"
 
 [node name="Lime Green" type="Button" parent="Control/Color Select" unique_id=1346545125]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.65882355, 0.90588236, 0.18039216, 1)
 text = "Lime Green"
 
 [node name="Mauve" type="Button" parent="Control/Color Select" unique_id=1750558923]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.45882353, 0.27450982, 0.39607844, 1)
 text = "Mauve"
 
 [node name="Teal" type="Button" parent="Control/Color Select" unique_id=547664355]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.07058824, 0.3254902, 0.34901962, 1)
 text = "Teal"
 
-[node name="ColorRect" type="ColorRect" parent="Control" unique_id=1824463377 node_paths=PackedStringArray("NamingPopup")]
+[node name="ColorRect" type="ColorRect" parent="Control" unique_id=1824463377 node_paths=PackedStringArray("NamingPopup", "LoadingPopup")]
 layout_mode = 0
 offset_top = 151.0
 offset_right = 40.0
@@ -92,6 +107,7 @@ offset_bottom = 191.0
 scale = Vector2(20, 20)
 script = ExtResource("2_1qsck")
 NamingPopup = NodePath("../../NamingPopup")
+LoadingPopup = NodePath("../../LoadingPopup")
 
 [node name="Save" type="Button" parent="Control" unique_id=4781677]
 layout_mode = 0
@@ -129,10 +145,10 @@ text = "Redo"
 
 [node name="Scripting" type="Button" parent="Control" unique_id=1062963334]
 layout_mode = 0
-offset_left = 459.0
-offset_top = 70.0
-offset_right = 512.0
-offset_bottom = 101.0
+offset_left = 461.0
+offset_top = 68.0
+offset_right = 514.0
+offset_bottom = 99.0
 text = "Script"
 
 [node name="Cartridge" type="Button" parent="Control" unique_id=820902017]
@@ -183,6 +199,22 @@ offset_right = 1435.0
 offset_bottom = 406.0
 placeholder_text = "Sprite Index"
 
+[node name="LoadingPopup" type="Control" parent="." unique_id=275138829]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_left = 1162.0
+offset_top = 376.0
+offset_right = 1202.0
+offset_bottom = 416.0
+
+[node name="LoadingLineEdit" type="LineEdit" parent="LoadingPopup" unique_id=1478793063]
+layout_mode = 0
+offset_right = 68.5
+offset_bottom = 31.0
+placeholder_text = "Input Index"
+emoji_menu_enabled = false
+
 [connection signal="pressed" from="Control/Color Select/Black" to="Control/ColorRect" method="_on_black_pressed"]
 [connection signal="pressed" from="Control/Color Select/Red" to="Control/ColorRect" method="_on_red_pressed"]
 [connection signal="pressed" from="Control/Color Select/Green" to="Control/ColorRect" method="_on_green_pressed"]
@@ -210,3 +242,4 @@ placeholder_text = "Sprite Index"
 [connection signal="text_submitted" from="NamingPopup/LineEdit" to="Control/ColorRect" method="_on_line_edit_text_submitted"]
 [connection signal="text_changed" from="NamingPopup/SpriteIndex" to="Control/ColorRect" method="_on_sprite_index_text_changed"]
 [connection signal="text_submitted" from="NamingPopup/SpriteIndex" to="Control/ColorRect" method="_on_sprite_index_text_submitted"]
+[connection signal="text_submitted" from="LoadingPopup/LoadingLineEdit" to="Control/ColorRect" method="_on_loading_line_edit_text_submitted"]

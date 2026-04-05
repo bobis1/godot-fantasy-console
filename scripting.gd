@@ -13,12 +13,14 @@ enum {
 	ADD, #Adds two registers
 	SUB, 
 	JMP,
-	SPR
+	SPR,
+	IF
 }
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	CodeEditor.text=decompile(Globals.ram.size() - 20480)
+	pass
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -40,13 +42,6 @@ func _on_line_edit_text_submitted(new_text: String) -> void:
 	var bytecode = compile(file)
 	for i in range(bytecode.size()):
 		Globals.ram[0x5000+i] = bytecode[i]
-	print("Bytecode: ", bytecode)
-	print("Bytecode size: ", bytecode.size())
-	print("RAM at 0x5000: ", Globals.ram[0x5000])
-	print("RAM at 0x5001: ", Globals.ram[0x5001])
-	print("RAM at 0x5002: ", Globals.ram[0x5002])
-	print("RAM at 0x5003: ", Globals.ram[0x5003])
-	print("PC after compile: ", Globals.pc)
 	Globals.isRunning = false
 	Globals.isStopped = false
 	Globals.pc = 0x5000
@@ -97,8 +92,66 @@ func compile(source_code: String) -> PackedByteArray:
 				bytecode.append(tokens[1].to_int())
 				bytecode.append(tokens[2].to_int())
 				bytecode.append(tokens[3].to_int())
+			"IF":
+				bytecode.append(IF)
+				bytecode.append(tokens[1].to_int())
+				bytecode.append(tokens[2].to_int())
+				bytecode.append(tokens[3].to_int())
 	return bytecode
 
+
+func decompile(length: int) -> String:
+	var pc = 20480 # 0x5000
+	var assemblyText: String
+	while pc < 20480 + length:
+		var opcode = Globals.ram[pc]
+		match opcode:
+			MOV_R_V:
+				var reg = Globals.ram[pc + 1]
+				var val = Globals.ram[pc + 2]
+				assemblyText += "MOV_R_V" +" "+ str(reg) +" "+ str(val) + "\n"
+				pc += 3
+			STOP:
+				assemblyText += "STOP"
+				pc += 1
+			MOV_R_R:
+				var reg1 = Globals.ram[pc + 1]
+				var reg2 = Globals.ram[pc + 2]
+				assemblyText += "MOV_R_R" +" " + str(reg1) + " " + str(reg2) + "\n"
+				pc += 3
+			WRITE:
+				var addr = (Globals.ram[pc + 1]*256 + Globals.ram[pc +2])
+				var val = Globals.ram[pc + 3]
+				assemblyText += "WRITE" + " " + str(addr) + " " + str(val) + "\n"
+				pc += 4
+			ADD:
+				var R1 = Globals.ram[pc + 1]
+				var R2 = Globals.ram[pc + 2]
+				assemblyText += "ADD" + " " + str(R1) + " " + str(R2) + "\n"
+				pc += 3
+			SUB:
+				var addr = (Globals.ram[pc + 1] * 256 + Globals.ram[pc + 2])
+				var val = (Globals.ram[pc + 3] * 256 + Globals.ram[pc + 4])
+				assemblyText += "SUB" + " " + str(addr) + " " + str(val) + "\n"
+				pc += 5
+			JMP:
+				var addr = (Globals.ram[pc + 1] * 256 + Globals.ram[pc + 2])
+				assemblyText += "JMP" + " " + str(addr) + "\n"
+				pc += 3
+			SPR:
+				var index = Globals.ram[pc + 1]
+				var x = Globals.ram[pc + 2]
+				var y = Globals.ram[pc + 3]
+				assemblyText += "SPR" + " " + str(index) + " " + str(x) + " " + str(y) + "\n"
+				pc += 4
+			IF:
+				var val1 = Globals.ram[pc + 1]
+				var val2 = Globals.ram[pc + 2]
+				var pcInc = Globals.ram[pc + 3]
+				assemblyText += "IF" + " " + str(val1) + "  " + str(val2) + " " + str(pcInc) + "\n"
+				pc += 4
+	return assemblyText
+		
 
 func _on_back_pressed() -> void:
 	Globals.isRunning = false

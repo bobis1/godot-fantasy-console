@@ -22,6 +22,7 @@ offset_bottom = 1750.0
 [node name="CodeEdit" type="CodeEdit" parent="Control/HBoxContainer" unique_id=271707587]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 placeholder_text = "start your assembly now!"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Control/HBoxContainer" unique_id=591266467]

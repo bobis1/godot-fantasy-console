@@ -69,7 +69,7 @@ func run_cpu():
 			SUB:
 				var addr = Globals.ram[Globals.pc + 1]
 				Globals.ram[addr] = Globals.ram[Globals.pc + 1] - Globals.ram[Globals.pc + 2]
-				Globals.pc += 5
+				Globals.pc += 3
 			JMP:
 				Globals.pc = (Globals.ram[Globals.pc + 1] * 256) + Globals.ram[Globals.pc + 2]
 			SPR:
@@ -119,9 +119,9 @@ func compile(source_code: String) -> PackedByteArray:
 			"SUB":
 				bytecode.append(SUB)
 				bytecode.append(tokens[1].to_int() / 256)
+				bytecode.append(tokens[1].to_int() % 256)
+				bytecode.append(tokens[2].to_int() / 256)
 				bytecode.append(tokens[2].to_int() % 256)
-				bytecode.append(tokens[3].to_int() / 256)
-				bytecode.append(tokens[4].to_int() % 256)
 			"JMP":
 				bytecode.append(JMP)
 				bytecode.append(tokens[1].to_int() / 256)

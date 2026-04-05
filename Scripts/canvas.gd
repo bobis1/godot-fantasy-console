@@ -19,7 +19,6 @@ var spriteName: String
 var loadingIndex: int
 var loadingPath: String
 @export var NamingPopup: Control
-@export var LoadingFileDialouge: FileDialog
 @export var LoadingPopup: Control
 
 var palette = [
@@ -208,13 +207,6 @@ func _on_back_pressed() -> void:
 
 func _on_line_edit_text_submitted(new_text: String) -> void:
 	spriteName = new_text
-	#var file = FileAccess.open("user://"+ str(SpriteIndex) +spriteName+".dat", FileAccess.WRITE)
-	#file.store_buffer(get_sprite_as_buffer())
-	#sprite_data.append_array(get_sprite_as_buffer())
-	#Globals.isLoaded = false
-	#isNameSubmitted = true
-	#if isIndexSubmitted && isNameSubmitted:
-			#NamingPopup.visible = false
 	var packedSprite = get_sprite_as_buffer()
 	var start = SpriteIndex * 32
 	for i in range(32):
@@ -264,7 +256,6 @@ func _on_cartridge_pressed() -> void:
 
 func _on_load_pressed() -> void:
 	LoadingPopup.visible = true
-	LoadingFileDialouge.popup_centered()
 	pass 
 
 
@@ -285,10 +276,6 @@ func _on_file_dialog_file_selected(path: String) -> void:
 	pass
 
 
-func _on_loadfrom_file_pressed() -> void:
-	pass
-
-
 func _on_clear_pressed() -> void:
 	sprite_data.resize(grid_size * grid_size)
 	sprite_data.fill(0)
@@ -305,3 +292,15 @@ func _add_to_history(current_version: PackedByteArray):
 	
 	history.append(current_version)
 	history_index += 1
+
+
+func _on_loading_line_edit_text_submitted(new_text: String) -> void:
+	var index = new_text.to_int()
+	var start = 0x4B32
+	var SpriteBuffer: PackedByteArray
+	SpriteBuffer.resize(32)
+	for i in range(32):
+		SpriteBuffer[i] = Globals.ram[index * 32 + i + start]
+	load_sprite_from_buffer(SpriteBuffer)
+	LoadingPopup.visible = false
+	pass

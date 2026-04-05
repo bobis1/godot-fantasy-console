@@ -13,7 +13,7 @@ config_version=5
 config/name="FantasyConsole"
 run/main_scene="uid://dc8npbms3xwpb"
 config/features=PackedStringArray("4.6", "Forward Plus")
-boot_splash/bg_color=Color(0.27421808, 0.40613085, 0.34870723, 1)
+boot_splash/bg_color=Color(0, 0, 0, 1)
 boot_splash/show_image=false
 boot_splash/use_filter=false
 config/icon="res://icon.svg"
@@ -73,3 +73,4 @@ B={
 
 textures/canvas_textures/default_texture_filter=0
 rendering_device/driver.windows="d3d12"
+environment/defaults/default_clear_color=Color(0.1056141, 0.10561419, 0.10561416, 1)
