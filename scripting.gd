@@ -15,7 +15,8 @@ enum {
 	JMP,
 	SPR,
 	IF,
-	MOV_V_R
+	MOV_A_R,
+	CLEAR
 }
 
 # Called when the node enters the scene tree for the first time.
@@ -52,7 +53,7 @@ func _on_line_edit_text_submitted(new_text: String) -> void:
 func compile(source_code: String) -> PackedByteArray:
 	var bytecode = PackedByteArray()
 	var lines = source_code.split("\n")
-
+	
 	for line in lines:
 		line = line.strip_edges()
 		if line == "" or line.begins_with(";"): continue 
@@ -97,12 +98,14 @@ func compile(source_code: String) -> PackedByteArray:
 				bytecode.append(checkForRegister(tokens[1], bytecode))
 				bytecode.append(checkForRegister(tokens[2], bytecode))
 				bytecode.append(tokens[3].to_int())
-			"MOV_V_R":
-				bytecode.append(MOV_V_R)
+			"MOV_A_R":
+				bytecode.append(MOV_A_R)
 				bytecode.append(tokens[1].replace("R", "").to_int())
 				bytecode.append(tokens[2].to_int() / 256)
 				bytecode.append(tokens[2].to_int() % 256)
-				
+			"CLEAR":
+				bytecode.append(CLEAR)
+	bytecode.append(0xFF)
 	return bytecode
  
 
@@ -111,12 +114,14 @@ func decompile(length: int) -> String:
 	var assemblyText: String
 	while pc < 20480 + length:
 		var opcode = Globals.ram[pc]
+		if opcode == 0xFF:
+			break
 		match opcode:
 			MOV_R_V:
 				var reg = Globals.ram[pc + 1]
-				var val = Globals.ram[pc + 2]
+				var val = (Globals.ram[pc + 2] * 256) + Globals.ram[pc + 3]
 				assemblyText += "MOV_R_V" +" "+ str(reg) +" "+ str(val) + "\n"
-				pc += 3
+				pc += 4
 			STOP:
 				assemblyText += "STOP"
 				pc += 1
@@ -156,6 +161,16 @@ func decompile(length: int) -> String:
 				var pcInc = Globals.ram[pc + 3]
 				assemblyText += "IF" + " " + str(val1) + "  " + str(val2) + " " + str(pcInc) + "\n"
 				pc += 4
+			MOV_A_R:
+				var highByte = Globals.ram[pc + 2]
+				var lowByte = Globals.ram[pc + 3]
+				var address = (highByte * 256) + lowByte
+				var Register = Globals.ram[pc + 1]
+				assemblyText += "MOV_V_R " + "R" + str(Register) + " " + str(address) + "\n"
+				pc += 4
+			CLEAR:
+				assemblyText += "CLEAR" + "\n"
+				pc += 1
 	return assemblyText
 		
 

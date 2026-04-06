@@ -37,7 +37,7 @@ func _on_save_pressed() -> void:
 
 func _on_load_pressed() -> void:
 	loadDia.visible = true
-	
+	loadDia.popup_centered()
 	pass
 
 

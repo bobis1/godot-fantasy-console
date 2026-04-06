@@ -214,21 +214,19 @@ func fill_rect(x: int, y: int, width: int, height: int, color_index: int) -> voi
 			WritePixel(j, i, color_index)
 
 func draw_test_pattern() -> void:
-	# 1. Clear screen to Dark Blue (Index 11)
 	fill_rect(0, 0, 240, 160, 11)
 	
-	# 2. Draw a Red border (Index 1)
 	for x in range(240):
 		WritePixel(x, 0, 1)   # Top
 		WritePixel(x, 159, 1) # Bottom
 	for y in range(160):
-		WritePixel(0, y, 1)   # Left
-		WritePixel(239, y, 1) # Right
+		WritePixel(0, y, 1)   
+		WritePixel(239, y, 1)
 		
-	fill_rect(20, 20, 40, 40, 2)  # Green Square
-	fill_rect(70, 20, 40, 40, 3)  # Blue Square
-	fill_rect(120, 20, 40, 40, 5) # Yellow Square
-	fill_rect(170, 20, 40, 40, 6) # Brown Square
+	fill_rect(20, 20, 40, 40, 2) 
+	fill_rect(70, 20, 40, 40, 3)
+	fill_rect(120, 20, 40, 40, 5) 
+	fill_rect(170, 20, 40, 40, 6)
 
 
 func load_sprite_from_file(file_path: String, sprite_index: int):

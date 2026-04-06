@@ -1,152 +1,67 @@
-<a id="readme-top"></a>
+# Godot Fantasy Console
+### Why this exists
+After 3 failed projects to create a fantasy game console. I believe that this project is ready for people to see it. I created this project with the purpose of learning more about consoles and computers as a whole at a lower level.
 
-<!-- SHIELDS -->
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
-
-<!-- HEADER -->
-<br />
-<div align="center">
-    <a href="https://github.com/BudzioT/Godot_Super-Wakatime">
-        <img src="https://cloud-bo1ln2br1-hack-club-bot.vercel.app/0godotwaka22.png"  alt="Godot Wakatime"/>
-    </a>
-    <h3 align="center"> Godot Super Wakatime </h3>
-    <p align="center">
-        Tool to measure time spent in loved by many people game engine - Godot
-        <br />
-        Officially approved to use in events created by Hack Club
-        <br />
-        <br />
-        <a href="https://godotengine.org/asset-library/asset/3484">Get from Asset Lib</a>
-        ·
-        <a href="https://youtu.be/rqAc-YdVXyM">View Demo</a>
-        ·
-        <a href="https://github.com/BudzioT/Godot_Super-Wakatime/issues/new">Report Bug / Request Feature</a>
-    </p>
-</div>
-
-<!-- CONTENTS -->
-<details>
-    <summary>Table of Contents</summary>
-    <ol>
-        <li>
-            <a href="#about">About The Project</a>
-            <ul>
-                <li><a href="#built-with">Built Using</a></li>
-            </ul>
-        </li>
-        <li>
-            <a href="#getting-started">Getting Started</a>
-            <ul>
-                <li><a href="#installation">Installation</a></li>
-            </ul>
-        </li>
-        <li><a href="#usage">Usage</a></li>
-        <li><a href="#license">License</a></li>
-    </ol>
-</details>
+### Usage
+When you first start the fantasy console you load into the "Game" Screen. When you are here the assembly program that is loaded will be running To go to the sprite editor you hit "r" on your keyboard. After this to get to the different menus of the editor there are different buttons to get you there such as the "Script" and "Cartridge" buttons.
+Video demo of how to load a cartridge: https://www.youtube.com/watch?v=jbBCyqgyIfA
 
 
-<!-- ABOUT -->
-## About The Project
-<br />
+### Specifications
+This console has 64kb of "ram" and 8 registers. The chart of all the addresses that the different "parts" of ram is below.
+| Purpose   | Start/End |
+| -------- | ---------- |
+| Vram     | 0x000/0x4B00|
+| Palette   |      0x4B01|
+|Input      |      0x4B31 |
+|Sprite     | 0x4B32/0x4FF6|
+|Instruction| 0x5000/0x10000|
 
-[![Product Screenshot][product-screenshot]](https://waka.hackclub.com)
+#### Sprites
+Each of the 64 pixel sprites are 32 bytes. With two pixels per byte. Each sprite has an index that is associated when you save it. To load a sprite in using the SPR instruction you have to put the sprite index as the first parameter.
 
-This tool can successfully measure time spent building your games or apps in Godot.
-<br />
-Here's why:
-* It differentiates between switching a scene and script
-* It counts key presses as coding and mouse clicks as building scene
-* Changing scene structure results in a heartbeat sent
-* It correctly detects OS, machine name, language, editor, files
-* It can detect your cursor line and position
-* Time is split between: Building, Coding, Testing
-* In the future it will also detect testing your projects
+#### Palette
+In this console there are 16 colors for you to chose from when creating your sprites. All of them are collected in this chart
 
-It works on both Linux and Windows, it wasn't tested on macOS yet
-<br />
-You can also see your time spent in the editor itself:
-[![Time in editor][time-screenshot]]
+| Name   | RGB
+| -------- | ---------- |
+| Transparent     | 0,0,0(This is special it will simply not render)||
+| Red       |  255,0,0|
+|Green      |  0,255,0 |
+|Blue       | 0,0,255|
+|Purple     |150,0,150
+|Yellow | 230,201,137|
+|Brown | 160,80,60|
+|Peach | 255, 204, 170|
+|Lavender| 131, 118, 156|
+|Light Gray| 194, 195, 199|
+|Dark Gray| 104, 105, 109|
+|Dark Blue| 29, 43, 83|
+|Dark Purple| 126, 37, 83|
+|Lime Green| 168,231,46|
+|Mauve| 117,70,101|
+|Teal| 18,83,89|
 
-<p align="right">(<a href="#readme-top">top</a>)</p>
+#### Instructions
+To create programs on this I created a very scuffed assembly language to do this. There are 12 instructions in the chart below. Examples of simple programs written in this assembly language can be found in the demos folder.
 
+| Mnemonic   | Usage | Example|
+| -------- | ----------|---------|
+| STOP     | Stops the program| STOP|
+| MOV_R_V   |      Moves a given value into a register|MOV R0 25 |
+|MOV_R_R      |      Moves the value of a Register into a second register | MOV R0 R1|
+|WRITE     | Writes a value into ram(It can be a value from a register or a static value)| WRITE 20494 40|
+|ADD| Adds a given value to a register(The second value can be a register or a static value)|ADD R2 10 |
+|SUB| Subtracts a given value to a register(The second value can be a register or a static value)| SUB R2 10|
+|JMP| Jumps to a certain value in the ram(This is typed in decimal)|JMP 20480|
+|SPR| Creates a sprite of a given index and a given x and y value.| SPR 0 R1 R2|
+|IF| Checks if two given values are true. If so then it moves on to the instruction right after it. If it is false it skips forward by an amount given by the third parameter.|IF R3 0 1|
+|MOV_A_R| Moves a value from ram into a register.| MOV_A_R R0 19249|
+|CLEAR| This draws the test pattern.(Not recomended for use)|CLEAR|
 
-### Built Using
-I used the Ouch! CLI tool for decompression of files <br />
-This project was built using one simple, yet powerful language.<br />
-It required a lot of workarounds, but it was a pleasure to use it
-* [![GDScript][Godot]][Godot-url]
-* [![Ouch!][Ouch-shield]][Ouch-url]
+#### Cartridges
+Right now the cartridges work by appending the ram to the end of a .png file. This .png file has a color randomly chosen. At some point I would like the center disk of the .png reflect what is actually being loading into it.
 
-<p align="right">(<a href="#readme-top">top</a>)</p>
+#### Inputs
+There are 6 inputs right now W,A,S,D,Q, and E. The input byte will automatically change based on which of these inputs you click. with 1,2,3,4,5,6 being the respective values based on the inputs.
 
-<!-- GETTING STARTED -->
-## Getting Started
-How to install and use this software? It's easy!
-
-### Installation
-You can either download it from the [Godot Asset Library](https://godotengine.org/asset-library/asset/3484).
-<br />Or you can manually install it, here's how to do it!
-1. Clone the repository
-    ```sh
-    git clone https://github.com/BudzioT/Godot_Super-Wakatime.git
-    ```
-2. Go into your project
-3. Insert the entire `./addons` folder into your project `res://` directory
-
-<p align="right">(<a href="#readme-top">top</a>)</p>
-
-<!-- USAGE -->
-## Usage
-Don't know how to use this plugin? Here are the steps:
-1. Turn on the plugin in your plugins. In your `Project -> Project Settings -> Plugins -> `Click the `Enable` checkbox near this plugin
-2. If prompted for API key, provide it from Wakatime website
-3. if there is an issue with it, please manually create `~/.wakatime.cfg` file with these contents:
-    ```sh
-    [settings]
-    api_key=xxxx
-    ```
-    Where xxxx is your api key
-<br /><br />
-If you are coming from Hack Club use this:
-    ```sh
-    [settings]
-    api_url = https://hackatime.hackclub.com/api/hackatime/v1
-    api_key=xxxx
-    ```
-4. Wakatime CLI should have been installed automatically along with Ouch! Decompression library
-5. Work on your project! You should see your results on either Wakatime or Hackatime!
-6. You can also see your time at the bottom panel
-
-<p align="right">(<a href="#readme-top">top</a>)</p>
-
-<!-- LICENSE -->
-## License
-
-Distributed under the MIT License. See `LICENSE` for more information.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-<!-- URLS -->
-[contributors-shield]: https://img.shields.io/github/contributors/budziot/Godot_Super-Wakatime?style=for-the-badge
-[contributors-url]: https://github.com/BudzioT/Godot_Super-Wakatime/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/budziot/Godot_Super-Wakatime?style=for-the-badge
-[forks-url]: https://github.com/BudzioT/Godot_Super-Wakatime/forks
-[stars-shield]: https://img.shields.io/github/stars/budziot/Godot_Super-Wakatime?style=for-the-badge
-[stars-url]: https://github.com/BudzioT/Godot_Super-Wakatime/stargazers
-[issues-shield]: https://img.shields.io/github/issues/budziot/Godot_Super-Wakatime?style=for-the-badge
-[issues-url]: https://github.com/BudzioT/Godot_Super-Wakatime/issues
-[license-shield]: https://img.shields.io/github/license/budziot/Godot_Super-Wakatime?style=for-the-badge
-[license-url]: https://github.com/BudzioT/Godot_Super-Wakatime/blob/master/addons/godot_super-wakatime/LICENSE
-[product-screenshot]: https://cloud-j4wibbzz7-hack-club-bot.vercel.app/0image.png
-[product-logo]: https://cloud-j4wibbzz7-hack-club-bot.vercel.app/2godotwaka2.png
-[Godot]: https://img.shields.io/badge/Godot%20Engine-478CBF?logo=godotengine&logoColor=fff&style=flat
-[Godot-url]: https://godotengine.org/
-[Ouch-shield]: https://img.shields.io/badge/Ouch!-tool-blue?label=Ouch!
-[Ouch-url]: https://github.com/ouch-org/ouch
-[time-screenshot]: https://cloud-l88kldf50-hack-club-bot.vercel.app/0image.png

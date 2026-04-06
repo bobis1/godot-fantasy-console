@@ -180,7 +180,7 @@ func get_sprite_as_buffer() -> PackedByteArray:
 		var pixel_right = sprite_data[i * 2 + 1]  
 		var packed_byte = (pixel_left << 4) | (pixel_right & 0x0F)
 		buffer[i] = packed_byte
-		
+	NamingPopup.visible = false
 	return buffer
 	
 	
@@ -207,10 +207,6 @@ func _on_back_pressed() -> void:
 
 func _on_line_edit_text_submitted(new_text: String) -> void:
 	spriteName = new_text
-	var packedSprite = get_sprite_as_buffer()
-	var start = SpriteIndex * 32
-	for i in range(32):
-		Globals.ram[start + 0x4B32 + i] = packedSprite[i]
 
 	pass
 
@@ -238,14 +234,16 @@ func _on_redo_pressed() -> void:
 
 
 func _on_sprite_index_text_submitted() -> void:
-	if isIndexSubmitted && isNameSubmitted:
-		NamingPopup.visible = false
+	var packedSprite = get_sprite_as_buffer()
+	var start = SpriteIndex * 32
+	NamingPopup.visible = false
+	for i in range(32):
+		Globals.ram[start + 0x4B32 + i] = packedSprite[i]
 	pass
 
 
 func _on_sprite_index_text_changed(new_text: String) -> void:
 	SpriteIndex = new_text.to_int()
-	isIndexSubmitted = true
 	pass
 
 

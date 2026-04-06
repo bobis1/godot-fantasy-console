@@ -183,14 +183,6 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="LineEdit" type="LineEdit" parent="NamingPopup" unique_id=534407082]
-layout_mode = 0
-offset_left = 1035.0
-offset_top = 412.0
-offset_right = 1435.0
-offset_bottom = 443.0
-placeholder_text = "Name the sprite"
-
 [node name="SpriteIndex" type="LineEdit" parent="NamingPopup" unique_id=262700467]
 layout_mode = 0
 offset_left = 1035.0
@@ -214,6 +206,21 @@ offset_right = 68.5
 offset_bottom = 31.0
 placeholder_text = "Input Index"
 emoji_menu_enabled = false
+
+[node name="Experiments" type="Control" parent="." unique_id=163489111]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="LineEdit" type="LineEdit" parent="Experiments" unique_id=534407082]
+layout_mode = 0
+offset_left = 1035.0
+offset_top = 412.0
+offset_right = 1435.0
+offset_bottom = 443.0
+placeholder_text = "Name the sprite"
 
 [connection signal="pressed" from="Control/Color Select/Black" to="Control/ColorRect" method="_on_black_pressed"]
 [connection signal="pressed" from="Control/Color Select/Red" to="Control/ColorRect" method="_on_red_pressed"]
@@ -239,7 +246,6 @@ emoji_menu_enabled = false
 [connection signal="pressed" from="Control/Cartridge" to="Control/ColorRect" method="_on_cartridge_pressed"]
 [connection signal="pressed" from="Control/load" to="Control/ColorRect" method="_on_load_pressed"]
 [connection signal="pressed" from="Control/Clear" to="Control/ColorRect" method="_on_clear_pressed"]
-[connection signal="text_submitted" from="NamingPopup/LineEdit" to="Control/ColorRect" method="_on_line_edit_text_submitted"]
 [connection signal="text_changed" from="NamingPopup/SpriteIndex" to="Control/ColorRect" method="_on_sprite_index_text_changed"]
 [connection signal="text_submitted" from="NamingPopup/SpriteIndex" to="Control/ColorRect" method="_on_sprite_index_text_submitted"]
 [connection signal="text_submitted" from="LoadingPopup/LoadingLineEdit" to="Control/ColorRect" method="_on_loading_line_edit_text_submitted"]

@@ -8,13 +8,14 @@ enum {
 	MOV_R_V,
 	MOV_R_R,
 	WRITE, #WRITE to ram
-	LOAD, # Get value from ram
+	LOAD, # Remove this at some points
 	ADD, #Adds two registers
 	SUB, 
 	JMP,
 	SPR,
 	IF,
-	MOV_V_R
+	MOV_A_R,
+	CLEAR
 	#SPRFromspriteData
 }
 
@@ -45,7 +46,7 @@ func spr(spriteIndex: int, x: int, y: int):
 func run_cpu():
 	Globals.isStopped = false
 	var cycles_this_frame = 0
-	var max_cycles = 1000
+	var max_cycles = 10
 	while !Globals.isStopped and cycles_this_frame < max_cycles:
 		Globals.ram[Globals.pc]
 		var opcode = Globals.ram[Globals.pc]
@@ -84,6 +85,7 @@ func run_cpu():
 				Globals.pc = (Globals.ram[Globals.pc + 1] * 256) + Globals.ram[Globals.pc + 2]
 			SPR:
 				spr(getCorrectValue(1), getCorrectValue(3),getCorrectValue(5))
+				print("SPR Ran")
 				Globals.pc += 7
 			IF:
 				var val1 = getCorrectValue(1)
@@ -94,15 +96,19 @@ func run_cpu():
 					print("Button Match")
 				else :
 					Globals.pc += 6 + pcInc
-			MOV_V_R:
+			MOV_A_R:
 				var highByte = Globals.ram[Globals.pc+2]
 				var lowByte =  Globals.ram[Globals.pc + 3]
 				var addr = (highByte * 256) + lowByte
 				registers[Globals.ram[Globals.pc + 1]] = Globals.ram[addr]
 				Globals.pc += 4
+			CLEAR:
+				hardware.draw_test_pattern()
+				Globals.pc += 4
 			_:
 				print("Unknown opcode: ", opcode, " at PC: ", Globals.pc)
 				Globals.pc += 1 
+			
 
 
 # Note to self: This takes 2 bytes

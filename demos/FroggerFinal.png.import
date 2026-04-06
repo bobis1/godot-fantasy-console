@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bll4shu3eih3t"
-path="res://.godot/imported/FallingFlashingBloop.png-3f47bf584fd8b9ac34c1ce4745f56f19.ctex"
+uid="uid://c8sidxr32kqfu"
+path="res://.godot/imported/FroggerFinal.png-320f4b1e3e070041f274aae1cff2b1fe.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://demos/FallingFlashingBloop.png"
-dest_files=["res://.godot/imported/FallingFlashingBloop.png-3f47bf584fd8b9ac34c1ce4745f56f19.ctex"]
+source_file="res://demos/FroggerFinal.png"
+dest_files=["res://.godot/imported/FroggerFinal.png-320f4b1e3e070041f274aae1cff2b1fe.ctex"]
 
 [params]
 
