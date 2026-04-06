@@ -4,7 +4,7 @@ After 3 failed projects to create a fantasy game console. I believe that this pr
 
 ### Usage
 When you first start the fantasy console you load into the "Game" Screen. When you are here the assembly program that is loaded will be running To go to the sprite editor you hit "r" on your keyboard. After this to get to the different menus of the editor there are different buttons to get you there such as the "Script" and "Cartridge" buttons.
-Video demo of how to load a cartridge: https://www.youtube.com/watch?v=jbBCyqgyIfA
+Video demo of how to load a cartridge: https://www.youtube.com/watch?v=jbBCyqgyIfA The cartridge must be a .png that either you created or a demo from the demos folder.
 
 
 ### Specifications
