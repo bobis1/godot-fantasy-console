@@ -1,6 +1,6 @@
 # Godot Fantasy Console
 ### Why this exists
-After 3 failed projects to create a fantasy game console. I believe that this project is ready for people to see it. I created this project with the purpose of learning more about consoles and computers as a whole at a lower level.
+After 2 failed projects to create a fantasy game console. I believe that this project is ready for people to see it. I created this project with the purpose of learning more about consoles and computers as a whole at a lower level.
 
 ### Usage
 When you first start the fantasy console you load into the "Game" Screen. When you are here the assembly program that is loaded will be running To go to the sprite editor you hit "r" on your keyboard. After this to get to the different menus of the editor there are different buttons to get you there such as the "Script" and "Cartridge" buttons.
