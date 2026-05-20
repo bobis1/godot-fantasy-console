@@ -2,10 +2,12 @@
 
 [ext_resource type="Script" uid="uid://bktvlokoyk0ts" path="res://scripting.gd" id="1_l5ayn"]
 
-[node name="Scripting" type="Node2D" unique_id=1189686964 node_paths=PackedStringArray("NamingPopup", "CodeEditor")]
+[node name="Scripting" type="Node2D" unique_id=1189686964 node_paths=PackedStringArray("NamingPopup", "CodeEditor", "GDscriptButton", "DocumentationButton")]
 script = ExtResource("1_l5ayn")
 NamingPopup = NodePath("Control/NamingPopup")
 CodeEditor = NodePath("Control/HBoxContainer/CodeEdit")
+GDscriptButton = NodePath("Control/HBoxContainer/VBoxContainer/ScriptingToggle")
+DocumentationButton = NodePath("Control/HBoxContainer/VBoxContainer/Documentation")
 
 [node name="Control" type="Control" parent="." unique_id=883977103]
 layout_mode = 3
@@ -36,6 +38,14 @@ text = "Save"
 layout_mode = 2
 text = "Back"
 
+[node name="ScriptingToggle" type="Button" parent="Control/HBoxContainer/VBoxContainer" unique_id=199915719]
+layout_mode = 2
+text = "Assembly"
+
+[node name="Documentation" type="Button" parent="Control/HBoxContainer/VBoxContainer" unique_id=1304042566]
+layout_mode = 2
+text = "Docs"
+
 [node name="NamingPopup" type="Control" parent="Control" unique_id=1398850020]
 visible = false
 anchors_preset = 0
@@ -51,6 +61,19 @@ offset_right = 1435.0
 offset_bottom = 443.0
 placeholder_text = "Name the script"
 
+[node name="Docs" type="Control" parent="." unique_id=681381242]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="Docs" unique_id=1055967024]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
 [connection signal="pressed" from="Control/HBoxContainer/VBoxContainer/Save" to="." method="_on_save_pressed"]
 [connection signal="pressed" from="Control/HBoxContainer/VBoxContainer/Back" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="Control/HBoxContainer/VBoxContainer/ScriptingToggle" to="." method="_on_scripting_toggle_pressed"]
+[connection signal="pressed" from="Control/HBoxContainer/VBoxContainer/Documentation" to="." method="_on_documentation_pressed"]
 [connection signal="text_submitted" from="Control/NamingPopup/LineEdit" to="." method="_on_line_edit_text_submitted"]

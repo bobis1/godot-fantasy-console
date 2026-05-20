@@ -3,6 +3,14 @@ extends Node2D
 var scriptPath = ""
 @export var NamingPopup: Control
 @export var CodeEditor: CodeEdit
+@export var GDscriptButton: Button
+@export var DocumentationButton: Button
+@export var Docs: Control
+
+var isOnGDScript = false
+var isDocsActivated = false
+
+const gdScriptPath = "user://Scripts/"
 
 enum {
 	STOP,
@@ -38,15 +46,20 @@ func _on_save_pressed() -> void:
 
 
 func _on_line_edit_text_submitted(new_text: String) -> void:
-	scriptPath = new_text
-	var file = CodeEditor.text
-	NamingPopup.visible = false
-	var bytecode = compile(file)
-	for i in range(bytecode.size()):
-		Globals.ram[0x5000+i] = bytecode[i]
-	Globals.isRunning = false
-	Globals.isStopped = false
-	Globals.pc = 0x5000
+	if(!isOnGDScript):
+		scriptPath = new_text
+		var file = CodeEditor.text
+		NamingPopup.visible = false
+		var bytecode = compile(file)
+		for i in range(bytecode.size()):
+			Globals.ram[0x5000+i] = bytecode[i]
+		Globals.isRunning = false
+		Globals.isStopped = false
+		Globals.pc = 0x5000
+	else:
+		var file = CodeEditor.text
+		NamingPopup.visible = false
+		runGDscript(file)
 	pass 
 
 
@@ -186,4 +199,46 @@ func _on_back_pressed() -> void:
 	Globals.isStopped = false
 	Globals.pc = 0
 	get_tree().change_scene_to_file("res://main.tscn")
+	pass
+
+
+
+
+func _on_scripting_toggle_pressed() -> void:
+	isOnGDScript = !isOnGDScript
+	if isOnGDScript:
+		GDscriptButton.text = "GDscript"
+		CodeEditor.text = "
+		var GDscriptWrapper: Node = GDscriptInterpreter
+		
+		
+		
+		func _process(delta: float) -> void:
+	pass
+	# Write your code here"
+	else:
+		GDscriptButton.text = "Assembly"
+	print(isOnGDScript)
+	pass 
+
+
+func runGDscript(script: String) -> void:
+	var n_script = GDScript.new()
+	var game_instance = RefCounted.new()
+	n_script.source_code = script
+	var compile = n_script.reload()
+	if compile == OK:
+		game_instance.set_script(n_script)
+	if game_instance.has_method("GameLoop"):
+		game_instance.call("GameLoop")
+	pass
+
+
+func _on_documentation_pressed() -> void:
+	if !isDocsActivated:
+		Docs.visible = true
+		isDocsActivated = true
+	else:
+		Docs.visible = false
+		isDocsActivated = true
 	pass
