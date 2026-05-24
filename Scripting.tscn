@@ -2,12 +2,13 @@
 
 [ext_resource type="Script" uid="uid://bktvlokoyk0ts" path="res://scripting.gd" id="1_l5ayn"]
 
-[node name="Scripting" type="Node2D" unique_id=1189686964 node_paths=PackedStringArray("NamingPopup", "CodeEditor", "GDscriptButton", "DocumentationButton")]
+[node name="Scripting" type="Node2D" unique_id=1189686964 node_paths=PackedStringArray("NamingPopup", "CodeEditor", "GDscriptButton", "DocumentationButton", "Docs")]
 script = ExtResource("1_l5ayn")
 NamingPopup = NodePath("Control/NamingPopup")
 CodeEditor = NodePath("Control/HBoxContainer/CodeEdit")
 GDscriptButton = NodePath("Control/HBoxContainer/VBoxContainer/ScriptingToggle")
 DocumentationButton = NodePath("Control/HBoxContainer/VBoxContainer/Documentation")
+Docs = NodePath("Docs")
 
 [node name="Control" type="Control" parent="." unique_id=883977103]
 layout_mode = 3
@@ -66,11 +67,6 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
-
-[node name="Label" type="Label" parent="Docs" unique_id=1055967024]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
 
 [connection signal="pressed" from="Control/HBoxContainer/VBoxContainer/Save" to="." method="_on_save_pressed"]
 [connection signal="pressed" from="Control/HBoxContainer/VBoxContainer/Back" to="." method="_on_back_pressed"]

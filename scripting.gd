@@ -7,6 +7,12 @@ var scriptPath = ""
 @export var DocumentationButton: Button
 @export var Docs: Control
 
+@export var DocsWeb: WebView
+
+
+
+var boilerPlate = "res://boilerPlate.txt"
+
 var isOnGDScript = false
 var isDocsActivated = false
 
@@ -30,6 +36,7 @@ enum {
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	CodeEditor.text=decompile(Globals.ram.size() - 20480)
+
 	pass
 
 
@@ -208,14 +215,7 @@ func _on_scripting_toggle_pressed() -> void:
 	isOnGDScript = !isOnGDScript
 	if isOnGDScript:
 		GDscriptButton.text = "GDscript"
-		CodeEditor.text = "
-		var GDscriptWrapper: Node = GDscriptInterpreter
-		
-		
-		
-		func _process(delta: float) -> void:
-	pass
-	# Write your code here"
+		CodeEditor.text = FileAccess.get_file_as_string(boilerPlate)
 	else:
 		GDscriptButton.text = "Assembly"
 	print(isOnGDScript)
@@ -225,12 +225,15 @@ func _on_scripting_toggle_pressed() -> void:
 func runGDscript(script: String) -> void:
 	var n_script = GDScript.new()
 	var game_instance = RefCounted.new()
-	n_script.source_code = script
+	print(script.replace(String.chr(0), "<NULL>"))
+	print(script.replace("\t", "<TAB>").replace("\n", "<NEWLINE>\n"))
+	n_script.source_code = script.replace(String.chr(0), "<NULL>")
 	var compile = n_script.reload()
 	if compile == OK:
-		game_instance.set_script(n_script)
-	if game_instance.has_method("GameLoop"):
-		game_instance.call("GameLoop")
+		var MainScene = load("res://main.tscn")
+		var MainInstance = MainScene.instantiate()
+		var targetNode = MainInstance.get_node("GDscriptRunner")
+		targetNode.set_script(n_script)
 	pass
 
 

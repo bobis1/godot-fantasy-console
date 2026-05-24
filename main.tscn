@@ -24,3 +24,5 @@ script = ExtResource("3_h2yge")
 
 [node name="GDscriptInterpreter" type="Node" parent="." unique_id=1095099723]
 script = ExtResource("4_1bvp3")
+
+[node name="GDscriptRunner" type="Node" parent="." unique_id=1873754585]

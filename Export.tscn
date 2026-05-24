@@ -1,0 +1,90 @@
+[gd_scene format=3 uid="uid://d1wqpdmx1l1co"]
+
+[node name="Export" type="Node2D" unique_id=773229243]
+
+[node name="Color Select" type="GridContainer" parent="." unique_id=1112597272]
+offset_left = 491.48297
+offset_top = 199.70389
+offset_right = 874.483
+offset_bottom = 335.7039
+columns = 4
+
+[node name="Black" type="Button" parent="Color Select" unique_id=345381385]
+layout_mode = 2
+text = "Transparent"
+
+[node name="Red" type="Button" parent="Color Select" unique_id=1910852640]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.77489054, 0, 0, 1)
+text = "Red"
+
+[node name="Green" type="Button" parent="Color Select" unique_id=11021109]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+text = "Green"
+
+[node name="Blue" type="Button" parent="Color Select" unique_id=482687092]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 1, 1)
+text = "Blue"
+
+[node name="Purple" type="Button" parent="Color Select" unique_id=752837147]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5882353, 0, 0.5882353, 1)
+text = "Purple
+"
+
+[node name="Yellow" type="Button" parent="Color Select" unique_id=1090955372]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9019608, 0.7882353, 0.5372549, 1)
+text = "Yellow"
+
+[node name="Brown" type="Button" parent="Color Select" unique_id=482496441]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.627451, 0.3137255, 0.23529412, 1)
+text = "Brown"
+
+[node name="Peach" type="Button" parent="Color Select" unique_id=215741211]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0.6666667, 1)
+text = "Peach"
+
+[node name="Lavender" type="Button" parent="Color Select" unique_id=1947174777]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5137255, 0.4627451, 0.6117647, 1)
+text = "Lavender"
+
+[node name="Light Gray" type="Button" parent="Color Select" unique_id=2051052131]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7607843, 0.7647059, 0.78039217, 1)
+text = "Light Gray"
+
+[node name="Dark Gray" type="Button" parent="Color Select" unique_id=961834047]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.40784314, 0.4117647, 0.42745098, 1)
+text = "Dark Gray"
+
+[node name="Dark Blue" type="Button" parent="Color Select" unique_id=320619778]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.11372549, 0.16862746, 0.3254902, 1)
+text = "Dark Blue"
+
+[node name="Dark Purple" type="Button" parent="Color Select" unique_id=1603583716]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.49411765, 0.14509805, 0.3254902, 1)
+text = "Dark Purple"
+
+[node name="Lime Green" type="Button" parent="Color Select" unique_id=1196137646]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65882355, 0.90588236, 0.18039216, 1)
+text = "Lime Green"
+
+[node name="Mauve" type="Button" parent="Color Select" unique_id=1508096392]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.45882353, 0.27450982, 0.39607844, 1)
+text = "Mauve"
+
+[node name="Teal" type="Button" parent="Color Select" unique_id=978732181]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.07058824, 0.3254902, 0.34901962, 1)
+text = "Teal"
