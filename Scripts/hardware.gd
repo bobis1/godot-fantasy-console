@@ -27,7 +27,8 @@ var dir = DirAccess.open("user://")
 func _ready() -> void:
 	if !Globals.IsRamInit:
 			Globals.ram.resize(65536)
-			Globals.ram.fill(0)
+		# NOTE: I changed the default empty value of RAM so that 
+			Globals.ram.fill(0xFF)
 			Globals.IsRamInit = true
 			SetDefaultPallete()
 	img = Image.create(240, 160, false, Image.FORMAT_RGB8)

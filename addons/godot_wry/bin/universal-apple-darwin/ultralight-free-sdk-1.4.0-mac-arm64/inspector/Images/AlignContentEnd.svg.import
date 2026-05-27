@@ -9,6 +9,7 @@ metadata={
 }
 
 [deps]
+
 source_file="res://addons/godot_wry/bin/universal-apple-darwin/ultralight-free-sdk-1.4.0-mac-arm64/inspector/Images/AlignContentEnd.svg"
 dest_files=["res://.godot/imported/AlignContentEnd.svg-96b71231ad0d6efab76f964a58b7e55f.ctex"]
 

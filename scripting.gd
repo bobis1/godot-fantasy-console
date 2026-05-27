@@ -9,7 +9,8 @@ var scriptPath = ""
 
 @export var DocsWeb: WebView
 
-
+var highlighter = CodeHighlighter.new()
+var AssemblyText = PackedStringArray([])
 
 var boilerPlate = "res://boilerPlate.txt"
 
@@ -36,10 +37,8 @@ enum {
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	CodeEditor.text=decompile(Globals.ram.size() - 20480)
-
+	setUpHighlighting()
 	pass
-
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	pass
@@ -131,7 +130,7 @@ func compile(source_code: String) -> PackedByteArray:
 
 func decompile(length: int) -> String:
 	var pc = 20480 # 0x5000
-	var assemblyText: String
+	var AssemblyText = PackedStringArray([])
 	while pc < 20480 + length:
 		var opcode = Globals.ram[pc]
 		if opcode == 0xFF:
@@ -140,58 +139,61 @@ func decompile(length: int) -> String:
 			MOV_R_V:
 				var reg = Globals.ram[pc + 1]
 				var val = (Globals.ram[pc + 2] * 256) + Globals.ram[pc + 3]
-				assemblyText += "MOV_R_V" +" "+ str(reg) +" "+ str(val) + "\n"
+				AssemblyText.append("MOV_R_V" +" "+ str(reg) +" "+ str(val) + "\n")
 				pc += 4
 			STOP:
-				assemblyText += "STOP"
+				AssemblyText.append("STOP")
 				pc += 1
 			MOV_R_R:
 				var reg1 = Globals.ram[pc + 1]
 				var reg2 = Globals.ram[pc + 2]
-				assemblyText += "MOV_R_R" +" " + str(reg1) + " " + str(reg2) + "\n"
+				AssemblyText.append("MOV_R_R" +" " + str(reg1) + " " + str(reg2) + "\n")
 				pc += 3
 			WRITE:
 				var addr = (Globals.ram[pc + 1]*256 + Globals.ram[pc +2])
 				var val = Globals.ram[pc + 3]
-				assemblyText += "WRITE" + " " + str(addr) + " " + str(val) + "\n"
+				AssemblyText.append("WRITE" + " " + str(addr) + " " + str(val) + "\n")
 				pc += 4
 			ADD:
 				var R1 = Globals.ram[pc + 1]
 				var R2 = Globals.ram[pc + 2]
-				assemblyText += "ADD" + " " + str(R1) + " " + str(R2) + "\n"
+				AssemblyText.append("ADD" + " " + str(R1) + " " + str(R2) + "\n")
 				pc += 3
 			SUB:
 				var addr = (Globals.ram[pc + 1] * 256 + Globals.ram[pc + 2])
 				var val = (Globals.ram[pc + 3] * 256 + Globals.ram[pc + 4])
-				assemblyText += "SUB" + " " + str(addr) + " " + str(val) + "\n"
+				AssemblyText.append("SUB" + " " + str(addr) + " " + str(val) + "\n")
 				pc += 5
 			JMP:
 				var addr = (Globals.ram[pc + 1] * 256 + Globals.ram[pc + 2])
-				assemblyText += "JMP" + " " + str(addr) + "\n"
+				AssemblyText.append("JMP" + " " + str(addr) + "\n")
 				pc += 3
 			SPR:
 				var index = Globals.ram[pc + 1]
 				var x = Globals.ram[pc + 2]
 				var y = Globals.ram[pc + 3]
-				assemblyText += "SPR" + " " + str(index) + " " + str(x) + " " + str(y) + "\n"
+				AssemblyText.append("SPR" + " " + str(index) + " " + str(x) + " " + str(y) + "\n")
 				pc += 4
 			IF:
 				var val1 = Globals.ram[pc + 1]
 				var val2 = Globals.ram[pc + 2]
 				var pcInc = Globals.ram[pc + 3]
-				assemblyText += "IF" + " " + str(val1) + "  " + str(val2) + " " + str(pcInc) + "\n"
+				AssemblyText.append("IF" + " " + str(val1) + "  " + str(val2) + " " + str(pcInc) + "\n")
 				pc += 4
 			MOV_A_R:
 				var highByte = Globals.ram[pc + 2]
 				var lowByte = Globals.ram[pc + 3]
 				var address = (highByte * 256) + lowByte
 				var Register = Globals.ram[pc + 1]
-				assemblyText += "MOV_V_R " + "R" + str(Register) + " " + str(address) + "\n"
+				AssemblyText.append("MOV_V_R " + "R" + str(Register) + " " + str(address) + "\n")
 				pc += 4
 			CLEAR:
-				assemblyText += "CLEAR" + "\n"
+				AssemblyText.append("CLEAR" + "\n")
 				pc += 1
-	return assemblyText
+			_:
+				pc+=1
+	var FinishedAssemblyText = "".join(AssemblyText)
+	return FinishedAssemblyText
 		
 
 func checkForRegister(token: String, bytecode: PackedByteArray) -> int:
@@ -224,18 +226,25 @@ func _on_scripting_toggle_pressed() -> void:
 
 func runGDscript(script: String) -> void:
 	var n_script = GDScript.new()
-	var game_instance = RefCounted.new()
-	print(script.replace(String.chr(0), "<NULL>"))
-	print(script.replace("\t", "<TAB>").replace("\n", "<NEWLINE>\n"))
-	n_script.source_code = script.replace(String.chr(0), "<NULL>")
+	
+	var clean_script = ""
+	for i in range(script.length()):
+		var char_code = script.unicode_at(i)
+		if char_code != 0 and char_code != 0xFFFD:
+			clean_script += String.chr(char_code)
+			
+	n_script.source_code = clean_script
+	
+	# 3. Compile!
 	var compile = n_script.reload()
 	if compile == OK:
 		var MainScene = load("res://main.tscn")
 		var MainInstance = MainScene.instantiate()
 		var targetNode = MainInstance.get_node("GDscriptRunner")
 		targetNode.set_script(n_script)
-	pass
-
+		add_child(MainInstance)
+	else:
+		print("Compiler failed even after scrubbing!")
 
 func _on_documentation_pressed() -> void:
 	if !isDocsActivated:
@@ -244,4 +253,22 @@ func _on_documentation_pressed() -> void:
 	else:
 		Docs.visible = false
 		isDocsActivated = true
+	pass
+	
+	
+func setUpHighlighting() -> void:
+	highlighter.number_color = Color("00873bff")
+	highlighter.symbol_color = Color(0.513, 0.513, 0.513, 1.0)
+	highlighter.function_color = Color(0.418, 0.602, 1.0, 1.0)
+	highlighter.member_variable_color = Color("#fd971f") # Orange
+	var keyword_color = Color("#f92672") # Pink/Red
+	var keywords = [
+		"func", "var", "if", "else", "elif", "pass", 
+		"extends", "return", "void", "Node", "for", "while"
+	]
+	for kw in keywords:
+		highlighter.add_keyword_color(kw, keyword_color)
+	highlighter.add_color_region("#", "", Color("#75715e"), true)
+	highlighter.add_color_region('"', '"', Color("#e6db74"), false)
+	CodeEditor.syntax_highlighter = highlighter
 	pass
