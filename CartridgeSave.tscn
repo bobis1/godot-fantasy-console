@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://cc2hqdlij14pr" path="res://Scripts/cartridgeSaveLoad.gd" id="1_qx6so"]
 
 [node name="CartridgeSave" type="Node2D" unique_id=9989981 node_paths=PackedStringArray("Naming", "errorDia", "SaveDia", "loadDia", "loading")]
+position = Vector2(1, 0)
 script = ExtResource("1_qx6so")
 Naming = NodePath("Control/Naming")
 errorDia = NodePath("Control/Error")
@@ -50,10 +51,10 @@ text = "Back"
 [node name="Naming" type="Control" parent="Control" unique_id=2099387408]
 visible = false
 anchors_preset = 0
-offset_left = 2.0
-offset_top = -1.0
-offset_right = 42.0
-offset_bottom = 39.0
+offset_left = -185.0
+offset_top = 312.0
+offset_right = -145.0
+offset_bottom = 352.0
 
 [node name="FileDialog" type="FileDialog" parent="Control/Naming" unique_id=334432803]
 oversampling_override = 1.0
@@ -81,8 +82,10 @@ scale = Vector2(5, 5)
 
 [node name="Label" type="Label" parent="Control/Error" unique_id=1638902587]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
+offset_left = -244.59999
+offset_top = 146.79999
+offset_right = 207.40001
+offset_bottom = 169.79999
 text = "Could not be saved make sure that all your names inputed"
 
 [node name="Loading" type="Control" parent="Control" unique_id=1638603983]

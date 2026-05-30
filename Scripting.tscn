@@ -63,10 +63,50 @@ offset_bottom = 443.0
 placeholder_text = "Name the script"
 
 [node name="Docs" type="Control" parent="." unique_id=681381242]
+visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Docs" unique_id=503265076]
+layout_mode = 0
+offset_right = 1534.0
+offset_bottom = 807.0
+bbcode_enabled = true
+text = "
+[b][color=#66d9ef]1. SYSTEM ARCHITECTURE[/color][/b]
+This system provides raw, low-level access to the virtual CPU and RAM. You can write highly optimized Assembly directly to memory, or use the GDScript wrapper for high-level engine logic.
+[ul]
+Memory: 64KB (Addressable up to [code]0xFFFF[/code])
+Boot Vector: Program Counter (PC) begins at [code]0x5000[/code] (20480)
+Registers: Universal registers accessed via [code]R[/code] prefix (e.g., [code]R1[/code])
+[/ul]
+
+[b][color=#a6e22e]2. ASSEMBLY INSTRUCTIONS[/color][/b]
+The arguments have to be seperated by a single space
+[table=3]
+[cell][b]CMD[/b][/cell] [cell][b]ARGS[/b][/cell] [cell][b]DESCRIPTION[/b][/cell]
+[cell][color=#f92672]MOV_R_V[/color][/cell] [cell]Reg Val[/cell] [cell]Moves a literal integer [i]Val[/i] into register [i]Reg[/i].[/cell]
+[cell][color=#f92672]MOV_R_R[/color][/cell] [cell]R1 R2[/cell] [cell]Copies the value currently stored in [i]R1[/i] into [i]R2[/i].[/cell]
+[cell][color=#f92672]MOV_A_R[/color][/cell] [cell]Reg Addr[/cell] [cell]Moves the value stored at memory [i]Addr[/i] into [i]Reg[/i].[/cell]
+[cell][color=#f92672]WRITE[/color][/cell] [cell]Addr Val[/cell] [cell]Writes a literal [i]Val[/i] directly into RAM [i]Addr[/i].[/cell]
+[cell][color=#f92672]ADD[/color][/cell] [cell]R1 R2[/cell] [cell]Adds the value of [i]R2[/i] to [i]R1[/i].[/cell]
+[cell][color=#f92672]SUB[/color][/cell] [cell]Addr Val[/cell] [cell]Subtracts [i]Val[/i] from the data at memory [i]Addr[/i].[/cell]
+[cell][color=#f92672]JMP[/color][/cell] [cell]Addr[/cell] [cell]Jumps the Program Counter (PC) to [i]Addr[/i].[/cell]
+[cell][color=#f92672]IF[/color][/cell] [cell]V1 V2 Jmp[/cell] [cell]If [i]V1 == V2[/i], the PC jumps forward by [i]Jmp[/i] steps.[/cell]
+[cell][color=#f92672]SPR[/color][/cell] [cell]Idx X Y[/cell] [cell]Draws sprite mapped to [i]Idx[/i] at screen coordinates [i]X, Y[/i].[/cell]
+[cell][color=#f92672]CLEAR[/color][/cell] [cell]None[/cell] [cell]Clears the current screen data buffer.[/cell]
+[cell][color=#f92672]STOP[/color][/cell] [cell]None[/cell] [cell]Halts the CPU execution completely.[/cell]
+[/table]
+
+[b][color=#fd971f]3. GDSCRIPT WRAPPER[/color][/b]
+If you prefer not to write raw assembly, toggle the editor into [b]GDScript Mode[/b].
+[ul]
+Code acts as a wrapper around the virtual machine.
+You must extend [code]Node[/code] and utilize standard Godot lifecycle functions.
+To read player input, interface with the globally injected [code]GDscriptInterpreter[/code] sibling node (e.g., [code]GDscriptWrapper.isUpPressed[/code]).
+[/ul]"
 
 [connection signal="pressed" from="Control/HBoxContainer/VBoxContainer/Save" to="." method="_on_save_pressed"]
 [connection signal="pressed" from="Control/HBoxContainer/VBoxContainer/Back" to="." method="_on_back_pressed"]

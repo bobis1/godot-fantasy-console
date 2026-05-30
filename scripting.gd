@@ -7,14 +7,12 @@ var scriptPath = ""
 @export var DocumentationButton: Button
 @export var Docs: Control
 
-@export var DocsWeb: WebView
 
 var highlighter = CodeHighlighter.new()
 var AssemblyText = PackedStringArray([])
 
 var boilerPlate = "res://boilerPlate.txt"
 
-var isOnGDScript = false
 var isDocsActivated = false
 
 const gdScriptPath = "user://Scripts/"
@@ -52,7 +50,7 @@ func _on_save_pressed() -> void:
 
 
 func _on_line_edit_text_submitted(new_text: String) -> void:
-	if(!isOnGDScript):
+	if(!Globals.isOnGDscript):
 		scriptPath = new_text
 		var file = CodeEditor.text
 		NamingPopup.visible = false
@@ -65,6 +63,9 @@ func _on_line_edit_text_submitted(new_text: String) -> void:
 	else:
 		var file = CodeEditor.text
 		NamingPopup.visible = false
+		Globals.GDscript = file
+		var loadFile = FileAccess.open("user://loading.txt", FileAccess.WRITE)
+		loadFile.store_string(file)
 		runGDscript(file)
 	pass 
 
@@ -214,13 +215,13 @@ func _on_back_pressed() -> void:
 
 
 func _on_scripting_toggle_pressed() -> void:
-	isOnGDScript = !isOnGDScript
-	if isOnGDScript:
+	Globals.isOnGDscript = !Globals.isOnGDscript
+	if Globals.isOnGDscript:
 		GDscriptButton.text = "GDscript"
 		CodeEditor.text = FileAccess.get_file_as_string(boilerPlate)
 	else:
 		GDscriptButton.text = "Assembly"
-	print(isOnGDScript)
+	print(Globals.isOnGDscript)
 	pass 
 
 
@@ -247,12 +248,11 @@ func runGDscript(script: String) -> void:
 		print("Compiler failed even after scrubbing!")
 
 func _on_documentation_pressed() -> void:
-	if !isDocsActivated:
+	isDocsActivated = !isDocsActivated
+	if isDocsActivated:
 		Docs.visible = true
-		isDocsActivated = true
 	else:
 		Docs.visible = false
-		isDocsActivated = true
 	pass
 	
 	

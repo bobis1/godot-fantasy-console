@@ -1,5 +1,5 @@
 extends Node2D
-var catridgeData: PackedByteArray
+var catridgeData
 var targetDir: String
 var cartridgeName: String
 var footer: PackedByteArray
@@ -12,6 +12,7 @@ var loadingDir: String
 
 
 var isReadyToSave: bool
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -30,7 +31,13 @@ func _on_save_pressed() -> void:
 	var dupRam = Globals.ram.duplicate()
 	#dupRam.append_array(Globals.spriteData)
 	#dupRam.append_array(footer)
-	catridgeData = dupRam
+	if !Globals.isOnGDscript:
+		catridgeData = dupRam
+	else:
+		if Globals.GDscript == null:
+			catridgeData = ""
+		else:
+			catridgeData = Globals.GDscript
 	Naming.visible = true
 	SaveDia.popup_centered()
 	pass
@@ -54,14 +61,21 @@ func save_cartridge() -> void:
 		var file = FileAccess.open(path, FileAccess.READ_WRITE)
 		print("Image Size", file.get_length())
 		if file:
-			file.seek_end()
-			file.store_buffer(catridgeData)
-			print("Cartridge Size", file.get_length())
-			file.close()
-			Naming.visible = false
-			
-		else:
-			errorDia.visible = true
+			if !Globals.isOnGDscript:
+				file.seek_end()
+				file.store_buffer(catridgeData)
+				file.store_string("ASM")
+				print("Cartridge Size", file.get_length())
+				file.close()
+				Naming.visible = false
+				print("Data type: ", typeof(catridgeData))
+				print("Is data null? ", catridgeData == null)
+			else:
+				var gd_bytes = catridgeData.to_utf8_buffer()
+				var data_size = gd_bytes.size()
+				file.store_buffer(gd_bytes)
+				file.store_string("GDS")
+				file.store_32(data_size)
 	else:
 		errorDia.visible = true
 	
@@ -87,18 +101,28 @@ func _on_file_dialog_confirmed() -> void:
 func _on_file_dialog_file_selected(path: String) -> void:
 	loadingDir = path
 	var file = FileAccess.open(path, FileAccess.READ)
-	#file.seek_end(-4)
-	#var footer = file.get_buffer(4)
+	file.seek_end(-3)
+	var footer = file.get_buffer(3).get_string_from_utf8()
 	#var sprite_size = footer.decode_u32(0)
-	file.seek_end(-(Globals.ram.size()))
-	var newRam = file.get_buffer(Globals.ram.size())
-	Globals.ram = newRam
-	print("New ram size", newRam.size())
-	print("Byte at 0x5000 New ram: ", newRam[20480])
-	print("Byte at 0x5000: ", Globals.ram[20480])
-	#var newSpriteData = file.get_buffer(sprite_size)
-	#Globals.spriteData = newSpriteData
-	print("Image after loading", file.get_length() - Globals.ram.size())
+	if footer == "ASM":
+		file.seek_end(-(Globals.ram.size()))
+		var newRam = file.get_buffer(Globals.ram.size())
+		Globals.ram = newRam
+		print("New ram size", newRam.size())
+		print("Byte at 0x5000 New ram: ", newRam[20480])
+		print("Byte at 0x5000: ", Globals.ram[20480])
+		#var newSpriteData = file.get_buffer(sprite_size)
+		#Globals.spriteData = newSpriteData
+		print("Image after loading", file.get_length() - Globals.ram.size())
+	else:
+		Globals.isOnGDscript = true
+		file.seek(0)
+		var gdscriptString = file.get_string_from_utf8()
+		var loading_file = FileAccess.open("user://loading.txt", FileAccess.WRITE)
+		if loading_file:
+			loading_file.store_string(gdscriptString)
+			loading_file.close()
+		print("GDScript loaded to user://loading.txt")
 	pass 
 
 func change_color(image: Image) -> void:

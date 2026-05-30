@@ -27,7 +27,7 @@ var dir = DirAccess.open("user://")
 func _ready() -> void:
 	if !Globals.IsRamInit:
 			Globals.ram.resize(65536)
-		# NOTE: I changed the default empty value of RAM so that 
+		# NOTE: I changed the default empty value of RAM so that the I would not get abunch of random STOPS
 			Globals.ram.fill(0xFF)
 			Globals.IsRamInit = true
 			SetDefaultPallete()

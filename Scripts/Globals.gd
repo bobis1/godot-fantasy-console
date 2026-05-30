@@ -8,3 +8,5 @@ var IsRamInit: bool = false
 var isLoaded: bool = false
 var wantCleared: bool = true
 var spriteData = PackedByteArray()
+var isOnGDscript: bool = false
+var GDscript = PackedStringArray()
