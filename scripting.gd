@@ -35,7 +35,16 @@ enum {
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	CodeEditor.text=decompile(Globals.ram.size() - 20480)
+	print("IDE Boot -> isOnGDscript: ", Globals.isOnGDscript, " | isJustLoaded: ", Globals.isJustLoaded)
 	setUpHighlighting()
+	changeScriptingMode()
+	if Globals.isOnGDscript && Globals.isJustLoaded:
+		var loadingText = FileAccess.open("user://loading.txt", FileAccess.READ)
+		if loadingText != null:
+					var loaded_string = loadingText.get_as_text()
+					print("String pulled from file: \n", loaded_string) 
+					CodeEditor.text = loaded_string
+					loadingText.close()
 	pass
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -216,13 +225,16 @@ func _on_back_pressed() -> void:
 
 func _on_scripting_toggle_pressed() -> void:
 	Globals.isOnGDscript = !Globals.isOnGDscript
+	changeScriptingMode()
+	pass 
+
+func changeScriptingMode() -> void:
 	if Globals.isOnGDscript:
 		GDscriptButton.text = "GDscript"
 		CodeEditor.text = FileAccess.get_file_as_string(boilerPlate)
 	else:
 		GDscriptButton.text = "Assembly"
 	print(Globals.isOnGDscript)
-	pass 
 
 
 func runGDscript(script: String) -> void:

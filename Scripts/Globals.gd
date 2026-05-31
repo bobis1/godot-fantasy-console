@@ -10,3 +10,4 @@ var wantCleared: bool = true
 var spriteData = PackedByteArray()
 var isOnGDscript: bool = false
 var GDscript = PackedStringArray()
+var isJustLoaded: bool = false

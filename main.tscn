@@ -22,8 +22,9 @@ hardware = NodePath("..")
 [node name="Interpreter" type="Node" parent="." unique_id=877474934]
 script = ExtResource("3_h2yge")
 
-[node name="GDscriptInterpreter" type="Node" parent="." unique_id=1095099723 node_paths=PackedStringArray("hardware")]
+[node name="GDscriptInterpreter" type="Node" parent="." unique_id=1095099723 node_paths=PackedStringArray("hardware", "CPU")]
 script = ExtResource("4_1bvp3")
 hardware = NodePath("..")
+CPU = NodePath("../CPU")
 
 [node name="GDscriptRunner" type="Node" parent="." unique_id=1873754585]

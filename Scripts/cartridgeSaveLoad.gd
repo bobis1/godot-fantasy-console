@@ -73,9 +73,12 @@ func save_cartridge() -> void:
 			else:
 				var gd_bytes = catridgeData.to_utf8_buffer()
 				var data_size = gd_bytes.size()
+				print("Extracted script size: ", data_size)
+				file.seek_end()
 				file.store_buffer(gd_bytes)
 				file.store_string("GDS")
 				file.store_32(data_size)
+				file.close()
 	else:
 		errorDia.visible = true
 	
@@ -115,14 +118,20 @@ func _on_file_dialog_file_selected(path: String) -> void:
 		#Globals.spriteData = newSpriteData
 		print("Image after loading", file.get_length() - Globals.ram.size())
 	else:
+		Globals.isJustLoaded = true
 		Globals.isOnGDscript = true
-		file.seek(0)
-		var gdscriptString = file.get_string_from_utf8()
+		file.seek_end(-20)
+		var last_bytes = file.get_buffer(20)
+		file.seek_end(-4)
+		var size = file.get_32()
+		file.seek_end(-size-7)
+		var gdscriptBuffer = file.get_buffer(size)
+		var gdscriptString = gdscriptBuffer.get_string_from_utf8()
 		var loading_file = FileAccess.open("user://loading.txt", FileAccess.WRITE)
 		if loading_file:
 			loading_file.store_string(gdscriptString)
 			loading_file.close()
-		print("GDScript loaded to user://loading.txt")
+		print(loading_file.get_as_text())
 	pass 
 
 func change_color(image: Image) -> void:
