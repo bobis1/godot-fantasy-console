@@ -47,6 +47,14 @@ text = "Assembly"
 layout_mode = 2
 text = "Docs"
 
+[node name="Undo" type="Button" parent="Control/HBoxContainer/VBoxContainer" unique_id=57723323]
+layout_mode = 2
+text = "Undo"
+
+[node name="Redo" type="Button" parent="Control/HBoxContainer/VBoxContainer" unique_id=1771338334]
+layout_mode = 2
+text = "Redo"
+
 [node name="NamingPopup" type="Control" parent="Control" unique_id=1398850020]
 visible = false
 anchors_preset = 0
@@ -112,4 +120,6 @@ To read player input, interface with the globally injected [code]GDscriptInterpr
 [connection signal="pressed" from="Control/HBoxContainer/VBoxContainer/Back" to="." method="_on_back_pressed"]
 [connection signal="pressed" from="Control/HBoxContainer/VBoxContainer/ScriptingToggle" to="." method="_on_scripting_toggle_pressed"]
 [connection signal="pressed" from="Control/HBoxContainer/VBoxContainer/Documentation" to="." method="_on_documentation_pressed"]
+[connection signal="pressed" from="Control/HBoxContainer/VBoxContainer/Undo" to="." method="_on_undo_pressed"]
+[connection signal="pressed" from="Control/HBoxContainer/VBoxContainer/Redo" to="." method="_on_redo_pressed"]
 [connection signal="text_submitted" from="Control/NamingPopup/LineEdit" to="." method="_on_line_edit_text_submitted"]

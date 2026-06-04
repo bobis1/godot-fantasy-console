@@ -1,9 +1,8 @@
-[gd_scene format=3 uid="uid://c2gkkoedwplcg"]
+[gd_scene format=3 uid="uid://cgvxpvds68f1r"]
 
-[ext_resource type="Script" uid="uid://cq24fawa3q2yq" path="res://Scripts/canvas.gd" id="2_1qsck"]
+[ext_resource type="Script" uid="uid://145tmsdfw2it" path="res://Scripts/TileMapCanvas.gd" id="1_g7xj7"]
 
-[node name="Editor" type="Node2D" unique_id=1189686964]
-position = Vector2(-136, 5)
+[node name="TilemapEditor" type="Node2D" unique_id=1189686964]
 
 [node name="Control" type="Control" parent="." unique_id=2099387470]
 layout_mode = 3
@@ -100,15 +99,16 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.07058824, 0.3254902, 0.34901962, 1)
 text = "Teal"
 
-[node name="ColorRect" type="ColorRect" parent="Control" unique_id=1824463377 node_paths=PackedStringArray("NamingPopup", "LoadingPopup")]
+[node name="ColorRect" type="ColorRect" parent="Control" unique_id=1824463377 node_paths=PackedStringArray("NamingPopup", "LoadingPopup", "SpriteChooserPopup")]
 layout_mode = 0
 offset_top = 151.0
-offset_right = 40.0
-offset_bottom = 191.0
+offset_right = 30.0
+offset_bottom = 175.0
 scale = Vector2(20, 20)
-script = ExtResource("2_1qsck")
+script = ExtResource("1_g7xj7")
 NamingPopup = NodePath("../../NamingPopup")
 LoadingPopup = NodePath("../../LoadingPopup")
+SpriteChooserPopup = NodePath("../SpriteChooser")
 
 [node name="Save" type="Button" parent="Control" unique_id=4781677]
 layout_mode = 0
@@ -177,13 +177,26 @@ offset_right = 625.0
 offset_bottom = 99.0
 text = "Clear"
 
-[node name="TilemapEditor" type="Button" parent="Control" unique_id=100297453]
+[node name="ChooseSprite" type="Button" parent="Control" unique_id=1858466106]
 layout_mode = 0
-offset_left = 551.0
-offset_top = 106.0
-offset_right = 667.0
-offset_bottom = 137.0
-text = "TileMapEditor"
+offset_left = 521.0
+offset_top = 28.0
+offset_right = 575.0
+offset_bottom = 59.0
+text = "Sprite Chooser"
+
+[node name="SpriteChooser" type="Control" parent="Control" unique_id=2008272920]
+visible = false
+anchors_preset = 0
+offset_left = 247.0
+offset_top = 266.0
+offset_right = 287.0
+offset_bottom = 306.0
+
+[node name="SpriteIndexSpriteChooser" type="LineEdit" parent="Control/SpriteChooser" unique_id=750062339]
+layout_mode = 0
+offset_right = 68.5
+offset_bottom = 31.0
 
 [node name="NamingPopup" type="Control" parent="." unique_id=1938953504]
 visible = false
@@ -255,7 +268,8 @@ placeholder_text = "Name the sprite"
 [connection signal="pressed" from="Control/Cartridge" to="Control/ColorRect" method="_on_cartridge_pressed"]
 [connection signal="pressed" from="Control/load" to="Control/ColorRect" method="_on_load_pressed"]
 [connection signal="pressed" from="Control/Clear" to="Control/ColorRect" method="_on_clear_pressed"]
-[connection signal="pressed" from="Control/TilemapEditor" to="Control/ColorRect" method="_on_tilemap_editor_pressed"]
+[connection signal="pressed" from="Control/ChooseSprite" to="Control/ColorRect" method="_on_choose_sprite_pressed"]
+[connection signal="text_submitted" from="Control/SpriteChooser/SpriteIndexSpriteChooser" to="Control/ColorRect" method="_on_sprite_index_sprite_chooser_text_submitted"]
 [connection signal="text_changed" from="NamingPopup/SpriteIndex" to="Control/ColorRect" method="_on_sprite_index_text_changed"]
 [connection signal="text_submitted" from="NamingPopup/SpriteIndex" to="Control/ColorRect" method="_on_sprite_index_text_submitted"]
 [connection signal="text_submitted" from="LoadingPopup/LoadingLineEdit" to="Control/ColorRect" method="_on_loading_line_edit_text_submitted"]

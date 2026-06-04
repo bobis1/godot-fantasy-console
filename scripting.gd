@@ -284,3 +284,13 @@ func setUpHighlighting() -> void:
 	highlighter.add_color_region('"', '"', Color("#e6db74"), false)
 	CodeEditor.syntax_highlighter = highlighter
 	pass
+
+
+func _on_undo_pressed() -> void:
+	CodeEditor.undo()
+	pass
+
+
+func _on_redo_pressed() -> void:
+	CodeEditor.redo()
+	pass

@@ -31,17 +31,20 @@ func isAPressed():
 		return true
 	return false
 
-func moveSpriteWithButtons(sprite: int, vx: int, vy: int, startX: int, startY: int):
-	var x: int = startX
-	var y: int = startY
+func setUpSprite(sprite: int, startX: int, startY: int, reg1: int, reg2: int):
+	setRegisterValue(reg1, startX)
+	setRegisterValue(reg2, startY)
+
+func moveSpriteWithButtons(sprite: int, vx: int, vy: int, reg1: int, reg2: int):
 	if Globals.ram[0x4B31] == 4:
-		hardware.draw_sprite(sprite,)
+		addRegisterValue(reg1,vx)
 	if Globals.ram[0x4B31] == 3:
-		return true
+		subRegisterValue(reg1,vx)
 	if Globals.ram[0x4B31] == 2:
-		return true
+		addRegisterValue(reg2,vy)
 	if Globals.ram[0x4B31] == 1:
-		return true
+		subRegisterValue(reg2,vy)
+	hardware.draw_sprite(sprite,getRegisterValue(0), getRegisterValue(1))
 	pass
 
 func setRegisterValue(register: int, value: int):
@@ -56,6 +59,8 @@ func subRegisterValue(register: int, value: int):
 	CPU.registers[register] -= value
 	pass
 
+func getRegisterValue(register: int) -> int:
+	return CPU.registers[register]
 
 
 func draw_sprite(sprite_index: int, x: int, y: int) -> void:

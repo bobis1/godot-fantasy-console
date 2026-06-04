@@ -1,25 +1,33 @@
 extends Control
 
+
+const SpriteStart = 0x4B32
+const SpriteSize = 32
+const mapHeight = 20
+const mapWidth = 30
 var grid_size = 8
 var sprite_data = []
 var current_color_index = 1
-
+const pixel_size: int = 8
 var history = []
 var history_index = -1
 
 var VersionCount = 0
 
-var SpriteIndex: int
+var SpriteIndex: int = 1
 var loadingIndexInputted: bool = false
 
 var isIndexSubmitted: bool
 var isNameSubmitted: bool
+var isOnSprite: bool = false
 
 var spriteName: String
 var loadingIndex: int
 var loadingPath: String
+var currentSpriteID: int
 @export var NamingPopup: Control
 @export var LoadingPopup: Control
+@export var SpriteChooserPopup: Control
 
 var palette = [
 	Color8(0, 0, 0, 0),
@@ -41,7 +49,7 @@ var palette = [
 ]
 
 func _ready():
-	sprite_data.resize(grid_size * grid_size)
+	sprite_data.resize(mapHeight * mapWidth)
 	sprite_data.fill(0) 
 
 func _gui_input(event):
@@ -50,36 +58,29 @@ func _gui_input(event):
 			_paint_pixel(event.position)
 
 func _paint_pixel(mouse_pos: Vector2):
-	var cell_size = size.x / grid_size
-	
+	var cell_size = size.x / mapHeight
+	var pixelSize = cell_size/8
 	var x = int(mouse_pos.x / cell_size)
 	var y = int(mouse_pos.y / cell_size)
 	
-	if x >= 0 and x < grid_size and y >= 0 and y < grid_size:
-		var index = (y * grid_size) + x
-		
-		if sprite_data[index] != current_color_index:
-			sprite_data[index] = current_color_index
-			VersionCount += 1
-			#var file = FileAccess.open("user://Versions" + spriteName + str(VersionCount) +".dat", FileAccess.WRITE)
-			#file.store_buffer(get_sprite_as_buffer())
-			queue_redraw()
-			_add_to_history(get_sprite_as_buffer())
+	if x >= 0 and x < mapWidth and y >= 0 and y < mapHeight:
+			var index = (y * mapWidth) + x  
+			if sprite_data[index] != currentSpriteID:
+				sprite_data[index] = currentSpriteID
+				VersionCount += 1
+				queue_redraw()
 
 func _draw():
-	var cell_size = size.x / grid_size
+	var cell_size = size.x / mapWidth
+	var visual_pixel_size = cell_size / 8.0 
+	
 	for i in range(sprite_data.size()):
-		var x = i % grid_size
-		var y = int(i / grid_size)
-		var memory_value = sprite_data[i]
-		var actual_color = palette[memory_value]
+		var x = i % mapWidth
+		var y = int(i / mapWidth)
+		var current_sprite_id = sprite_data[i]
 		
-		var rect = Rect2(Vector2(x, y) * cell_size, Vector2(cell_size, cell_size))
-		draw_rect(rect, actual_color)
-
-
-
-
+		if current_sprite_id != 0:
+			draw_sprite(current_sprite_id, x * cell_size, y * cell_size, visual_pixel_size)
 
 
 
@@ -231,13 +232,11 @@ func _on_redo_pressed() -> void:
 	pass
 
 
-func _on_sprite_index_text_submitted(new_text: String) -> void:
-	SpriteIndex = new_text.to_int()
+func _on_sprite_index_text_submitted() -> void:
 	var packedSprite = get_sprite_as_buffer()
 	var start = SpriteIndex * 32
 	NamingPopup.visible = false
 	for i in range(32):
-		print("PackedSpriteData:",str(i),packedSprite[i])
 		Globals.ram[start + 0x4B32 + i] = packedSprite[i]
 	pass
 
@@ -304,6 +303,35 @@ func _on_loading_line_edit_text_submitted(new_text: String) -> void:
 	pass
 
 
-func _on_tilemap_editor_pressed() -> void:
-	get_tree().change_scene_to_file("res://TilemapEditor.tscn")
+func _on_choose_sprite_pressed() -> void:
+	SpriteChooserPopup.visible = true
 	pass
+
+
+func _on_sprite_index_sprite_chooser_text_submitted(new_text: String) -> void:
+	currentSpriteID = new_text.to_int()
+	SpriteChooserPopup.visible = false
+	pass
+	
+	
+func draw_sprite(index: int, start_x: float, start_y: float, p_size: float) -> void:
+	var base_addr = SpriteStart + (index * SpriteSize)
+	for i in range(64):
+		var sx = i % 8
+		var sy = i / 8
+		
+		var byte_offset = i / 2
+		var current_byte = Globals.ram[base_addr + byte_offset]
+		var color_idx: int
+		print("Sprite Data:",str(i) , str(sprite_data[i]))
+
+		if i % 2 == 0:
+			color_idx = current_byte >> 4     
+		else:
+			color_idx = current_byte & 0x0F   
+			
+		if color_idx != 0:
+			var final_x = start_x + (sx * p_size)
+			var final_y = start_y + (sy * p_size)
+			var rect = Rect2(final_x, final_y, p_size, p_size)
+			draw_rect(rect, palette[color_idx])
