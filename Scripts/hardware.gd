@@ -7,7 +7,8 @@ const VramEnd = 0x4B00
 const PalleteStart = 0x4B01
 const InputAddr = 0x4B31
 const SpriteStart = 0x4B32
-const InstructionStart = 0x5000
+const tileMapStart = 0x7000
+const InstructionStart = 0xA000
 const SpriteSize = 32
 
 var Input_byte

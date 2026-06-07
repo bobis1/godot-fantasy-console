@@ -237,7 +237,6 @@ func _on_sprite_index_text_submitted(new_text: String) -> void:
 	var start = SpriteIndex * 32
 	NamingPopup.visible = false
 	for i in range(32):
-		print("PackedSpriteData:",str(i),packedSprite[i])
 		Globals.ram[start + 0x4B32 + i] = packedSprite[i]
 	pass
 

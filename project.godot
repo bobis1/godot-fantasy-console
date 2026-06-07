@@ -26,6 +26,7 @@ Globals="*uid://b3n4ptnw0clt6"
 
 window/size/viewport_width=2400
 window/size/viewport_height=1350
+window/size/borderless=true
 window/stretch/mode="viewport"
 
 [editor_plugins]

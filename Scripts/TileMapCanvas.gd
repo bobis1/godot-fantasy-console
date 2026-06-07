@@ -3,7 +3,7 @@ extends Control
 
 const SpriteStart = 0x4B32
 const SpriteSize = 32
-const mapHeight = 20
+const mapHeight = 24
 const mapWidth = 30
 var grid_size = 8
 var sprite_data = []
@@ -15,6 +15,7 @@ var history_index = -1
 var VersionCount = 0
 
 var SpriteIndex: int = 1
+var MapIndex: int = 0
 var loadingIndexInputted: bool = false
 
 var isIndexSubmitted: bool
@@ -56,12 +57,14 @@ func _gui_input(event):
 	if event is InputEventMouseButton or event is InputEventMouseMotion:
 		if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 			_paint_pixel(event.position)
+			print("Mouse Pos: ", event.position)
 
 func _paint_pixel(mouse_pos: Vector2):
-	var cell_size = size.x / mapHeight
-	var pixelSize = cell_size/8
-	var x = int(mouse_pos.x / cell_size)
-	var y = int(mouse_pos.y / cell_size)
+	var cell_size_x = size.x / mapWidth
+	var cell_size_y = size.y / mapHeight
+	var pixelSize = cell_size_x/8
+	var x = int(mouse_pos.x / cell_size_x)
+	var y = int(mouse_pos.y / cell_size_y)
 	
 	if x >= 0 and x < mapWidth and y >= 0 and y < mapHeight:
 			var index = (y * mapWidth) + x  
@@ -72,102 +75,21 @@ func _paint_pixel(mouse_pos: Vector2):
 
 func _draw():
 	var cell_size = size.x / mapWidth
+	var cell_size_y = size.y / mapHeight
 	var visual_pixel_size = cell_size / 8.0 
-	
+	print("Canvas Size", size)
 	for i in range(sprite_data.size()):
 		var x = i % mapWidth
 		var y = int(i / mapWidth)
 		var current_sprite_id = sprite_data[i]
 		
 		if current_sprite_id != 0:
-			draw_sprite(current_sprite_id, x * cell_size, y * cell_size, visual_pixel_size)
+			draw_sprite(current_sprite_id, x * cell_size, y * cell_size_y, visual_pixel_size)
 
-
-
-func _on_black_pressed() -> void:
-	current_color_index = 0
-	pass 
-
-
-func _on_red_pressed() -> void:
-	current_color_index = 1
-	pass 
-
-
-func _on_green_pressed() -> void:
-	current_color_index = 2
-	pass 
-
-
-func _on_blue_pressed() -> void:
-	current_color_index = 3
-	pass 
-
-
-func _on_purple_pressed() -> void:
-	current_color_index = 4
-	pass 
-
-func _on_yellow_pressed() -> void:
-	current_color_index = 5
-	pass
-
-
-func _on_brown_pressed() -> void:
-	current_color_index = 6
-	pass
-
-
-func _on_peach_pressed() -> void:
-	current_color_index = 7
-	pass 
-
-
-
-func _on_lavender_pressed() -> void:
-	current_color_index = 8
-	pass
-
-
-func _on_light_gray_pressed() -> void:
-	current_color_index = 9
-	pass
-
-
-func _on_dark_gray_pressed() -> void:
-	current_color_index = 10
-	pass
-
-
-
-func _on_dark_blue_pressed() -> void:
-	current_color_index = 11
-	pass
-
-
-func _on_dark_purple_pressed() -> void:
-	current_color_index = 12
-	pass
-
-
-
-func _on_lime_green_pressed() -> void:
-	current_color_index = 13
-	pass 
-
-
-func _on_mauve_pressed() -> void:
-	current_color_index = 14
-	pass
-
-
-func _on_teal_pressed() -> void:
-	current_color_index = 15
-	pass 
 
 
 func _on_save_pressed() -> void:
-	save_to_file()
+	NamingPopup.visible = true
 	pass
 
 
@@ -192,8 +114,6 @@ func load_sprite_from_buffer(buffer: PackedByteArray) -> void:
 	queue_redraw()
 
 
-func save_to_file():
-	NamingPopup.visible = true
 
 
 
@@ -233,16 +153,15 @@ func _on_redo_pressed() -> void:
 
 
 func _on_sprite_index_text_submitted() -> void:
-	var packedSprite = get_sprite_as_buffer()
-	var start = SpriteIndex * 32
-	NamingPopup.visible = false
-	for i in range(32):
-		Globals.ram[start + 0x4B32 + i] = packedSprite[i]
+	#var packedSprite = get_sprite_as_buffer()
+	#var start = SpriteIndex * 32
+	#NamingPopup.visible = false
+	SaveMapToRam(MapIndex, 0x7000)
 	pass
 
 
 func _on_sprite_index_text_changed(new_text: String) -> void:
-	SpriteIndex = new_text.to_int()
+	MapIndex = new_text.to_int()
 	pass
 
 
@@ -258,8 +177,7 @@ func _on_load_pressed() -> void:
 
 func _on_loading_index_line_text_submitted(new_text: String) -> void:
 	loadingIndex = new_text.to_int()
-	load_sprite_from_buffer(Globals.ram.slice(loadingIndex*32, (loadingIndex*32)+32))
-	isIndexSubmitted = true
+	loadMapFromRam(loadingIndex, 0x7000)
 	pass 
 
 
@@ -274,12 +192,12 @@ func _on_file_dialog_file_selected(path: String) -> void:
 
 
 func _on_clear_pressed() -> void:
-	sprite_data.resize(grid_size * grid_size)
+	sprite_data.resize(mapHeight * mapWidth)
 	sprite_data.fill(0)
 	queue_redraw()
-	var start = SpriteIndex * 32
-	for i in range(32):
-		Globals.ram[start + i + 0x4B32] = 0
+	var start = MapIndex * 720
+	for i in range(720):
+		Globals.ram[start + i + 0x7000] = 0
 	pass
 	
 	
@@ -293,12 +211,8 @@ func _add_to_history(current_version: PackedByteArray):
 
 func _on_loading_line_edit_text_submitted(new_text: String) -> void:
 	var index = new_text.to_int()
-	var start = 0x4B32
-	var SpriteBuffer: PackedByteArray
-	SpriteBuffer.resize(32)
-	for i in range(32):
-		SpriteBuffer[i] = Globals.ram[index * 32 + i + start]
-	load_sprite_from_buffer(SpriteBuffer)
+	var start = 0x7000
+	loadMapFromRam(index, start)
 	LoadingPopup.visible = false
 	pass
 
@@ -323,7 +237,6 @@ func draw_sprite(index: int, start_x: float, start_y: float, p_size: float) -> v
 		var byte_offset = i / 2
 		var current_byte = Globals.ram[base_addr + byte_offset]
 		var color_idx: int
-		print("Sprite Data:",str(i) , str(sprite_data[i]))
 
 		if i % 2 == 0:
 			color_idx = current_byte >> 4     
@@ -335,3 +248,31 @@ func draw_sprite(index: int, start_x: float, start_y: float, p_size: float) -> v
 			var final_y = start_y + (sy * p_size)
 			var rect = Rect2(final_x, final_y, p_size, p_size)
 			draw_rect(rect, palette[color_idx])
+			
+			
+func SaveMapToRam(MapIndex: int, MapStart: int):
+	var mapIndex = MapStart + (MapIndex * 720)
+	print(" Attempting to save Map Slot: ", MapIndex, " at RAM address: ", mapIndex)
+	for i in 720:
+		print("RamADDress", Globals.ram[i + mapIndex], "MapData", sprite_data[i])
+		Globals.ram[i + mapIndex] = sprite_data[i]
+		print("After address","RamADDress", Globals.ram[i + mapIndex], "MapData", sprite_data[i])
+	pass
+
+func loadMapFromRam(MapIndex: int, MapStart):
+	var mapIndex = MapStart + (MapIndex * 720)
+	for i in 720:
+		sprite_data[i] = Globals.ram[i+mapIndex]
+	queue_redraw()
+	pass
+
+
+func _on_tile_map_save_text_changed(new_text: String) -> void:
+	MapIndex = new_text.to_int()
+	pass
+
+
+func _on_tile_map_save_text_submitted(new_text: String) -> void:
+	SaveMapToRam(MapIndex, 0x7000)
+	NamingPopup.visible = false
+	pass
