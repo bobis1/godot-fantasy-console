@@ -108,6 +108,7 @@ offset_right = 287.0
 offset_bottom = 306.0
 
 [node name="SpriteIndexSpriteChooser" type="LineEdit" parent="Control/SpriteChooser" unique_id=750062339]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 0
 offset_right = 68.5
 offset_bottom = 31.0
@@ -122,8 +123,10 @@ offset_right = 1202.0
 offset_bottom = 416.0
 
 [node name="LoadingLineEdit" type="LineEdit" parent="LoadingPopup" unique_id=1478793063]
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 0
-offset_right = 68.5
+offset_left = -126.0
+offset_right = -57.5
 offset_bottom = 31.0
 placeholder_text = "Input Index"
 emoji_menu_enabled = false

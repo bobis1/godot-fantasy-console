@@ -252,11 +252,8 @@ func draw_sprite(index: int, start_x: float, start_y: float, p_size: float) -> v
 			
 func SaveMapToRam(MapIndex: int, MapStart: int):
 	var mapIndex = MapStart + (MapIndex * 720)
-	print(" Attempting to save Map Slot: ", MapIndex, " at RAM address: ", mapIndex)
 	for i in 720:
-		print("RamADDress", Globals.ram[i + mapIndex], "MapData", sprite_data[i])
 		Globals.ram[i + mapIndex] = sprite_data[i]
-		print("After address","RamADDress", Globals.ram[i + mapIndex], "MapData", sprite_data[i])
 	pass
 
 func loadMapFromRam(MapIndex: int, MapStart):
@@ -275,4 +272,5 @@ func _on_tile_map_save_text_changed(new_text: String) -> void:
 func _on_tile_map_save_text_submitted(new_text: String) -> void:
 	SaveMapToRam(MapIndex, 0x7000)
 	NamingPopup.visible = false
+	Globals.isOnTileMap = true
 	pass

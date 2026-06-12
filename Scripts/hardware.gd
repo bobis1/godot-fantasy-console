@@ -136,7 +136,10 @@ func _process(delta: float) -> void:
 	#if Input_byte & 0x02: player_y += 1 # DOWN (Bit 1)
 	#if Input_byte & 0x04: player_x -= 1 # LEFT (Bit 2)
 	#if Input_byte & 0x08: player_x += 1 # RIGHT (Bit 3)
-	draw_test_pattern()
+	#if !Globals.isOnTileMap:
+	#draw_test_pattern()
+#	else:
+#		drawTilemap(0)
 #
 	#draw_sprite(1, player_x, player_y)
 	#draw_sprite(2, 120, 120)
@@ -237,3 +240,11 @@ func load_sprite_from_file(file_path: String, sprite_index: int):
 		var start_address = SpriteStart + (sprite_index * SpriteSize)
 		for i in range(32):
 			Globals.ram[start_address + i] = buffer[i]
+
+
+func drawTilemap(index: int):
+	for i in 720:
+		var x = i % 30
+		var y = int(i / 30)
+		draw_sprite(Globals.ram[i + tileMapStart + index * 720], x * 8, y * 8)
+pass

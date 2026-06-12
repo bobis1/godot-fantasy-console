@@ -31,7 +31,7 @@ func isAPressed():
 		return true
 	return false
 
-func setUpSprite(sprite: int, startX: int, startY: int, reg1: int, reg2: int):
+func setUpSprite(startX: int, startY: int, reg1: int, reg2: int):
 	setRegisterValue(reg1, startX)
 	setRegisterValue(reg2, startY)
 
@@ -44,7 +44,7 @@ func moveSpriteWithButtons(sprite: int, vx: int, vy: int, reg1: int, reg2: int):
 		addRegisterValue(reg2,vy)
 	if Globals.ram[0x4B31] == 1:
 		subRegisterValue(reg2,vy)
-	hardware.draw_sprite(sprite,getRegisterValue(0), getRegisterValue(1))
+	hardware.draw_sprite(sprite,getRegisterValue(reg1), getRegisterValue(reg2))
 	pass
 
 func setRegisterValue(register: int, value: int):
@@ -65,4 +65,12 @@ func getRegisterValue(register: int) -> int:
 
 func draw_sprite(sprite_index: int, x: int, y: int) -> void:
 	hardware.draw_sprite(sprite_index, x, y)
+	pass
+
+func SwitchTilemap(tilemapIndex: int):
+	hardware.drawTilemap(tilemapIndex)
+	pass
+
+func drawTestPattern():
+	hardware.draw_test_pattern()
 	pass

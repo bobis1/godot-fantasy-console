@@ -127,7 +127,7 @@ func _input(event: InputEvent) -> void:
 				last_tick_frame = Time.get_ticks_msec()
 
 		elif tab_open == "2D" || tab_open == "3D":
-			if event is InputEventMouse: # we dont really care if people are typing in node editor
+			if event is InputEventMouseButton: # we dont really care if people are typing in node editor
 				var snapshot = get_building_data(event)
 
 				if snapshot == null:

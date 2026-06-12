@@ -6,7 +6,7 @@ var scriptPath = ""
 @export var GDscriptButton: Button
 @export var DocumentationButton: Button
 @export var Docs: Control
-
+@export var DocumentationText: RichTextLabel
 
 var highlighter = CodeHighlighter.new()
 var AssemblyText = PackedStringArray([])
@@ -34,6 +34,52 @@ enum {
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	DocumentationText.text = "
+[b][color=#66d9ef]1. SYSTEM ARCHITECTURE[/color][/b]
+This system provides raw, low-level access to the virtual CPU and RAM. You can write highly optimized Assembly directly to memory, or use the GDScript wrapper for high-level engine logic.
+[ul]
+Memory: 64KB (Addressable up to [code]0xFFFF[/code])
+ Program Counter (PC) begins at [code]0x5000[/code] (20480)
+ Universal registers accessed via [code]R[/code] prefix (e.g., [code]R1[/code])
+[/ul]
+
+[b][color=#a6e22e]2. ASSEMBLY INSTRUCTIONS[/color][/b]
+The arguments have to be seperated by a single space
+[table=3]
+[cell][b]CMD[/b][/cell] [cell][b]ARGS[/b][/cell] [cell][b]DESCRIPTION[/b][/cell]
+[cell][color=#f92672]MOV_R_V[/color][/cell] [cell]Reg Val[/cell] [cell]Moves a literal integer [i]Val[/i] into register [i]Reg[/i].[/cell]
+[cell][color=#f92672]MOV_R_R[/color][/cell] [cell]R1 R2[/cell] [cell]Copies the value currently stored in [i]R1[/i] into [i]R2[/i].[/cell]
+[cell][color=#f92672]MOV_A_R[/color][/cell] [cell]Reg Addr[/cell] [cell]Moves the value stored at memory [i]Addr[/i] into [i]Reg[/i].[/cell]
+[cell][color=#f92672]WRITE[/color][/cell] [cell]Addr Val[/cell] [cell]Writes a literal [i]Val[/i] directly into RAM [i]Addr[/i].[/cell]
+[cell][color=#f92672]ADD[/color][/cell] [cell]R1 R2[/cell] [cell]Adds the value of [i]R2[/i] to [i]R1[/i].[/cell]
+[cell][color=#f92672]SUB[/color][/cell] [cell]Addr Val[/cell] [cell]Subtracts [i]Val[/i] from the data at memory [i]Addr[/i].[/cell]
+[cell][color=#f92672]JMP[/color][/cell] [cell]Addr[/cell] [cell]Jumps the Program Counter (PC) to [i]Addr[/i].[/cell]
+[cell][color=#f92672]IF[/color][/cell] [cell]V1 V2 Jmp[/cell] [cell]If [i]V1 == V2[/i], the PC jumps forward by [i]Jmp[/i] steps.[/cell]
+[cell][color=#f92672]SPR[/color][/cell] [cell]Idx X Y[/cell] [cell]Draws sprite mapped to [i]Idx[/i] at screen coordinates [i]X, Y[/i].[/cell]
+[cell][color=#f92672]CLEAR[/color][/cell] [cell]None[/cell] [cell]Clears the current screen data buffer.[/cell]
+[cell][color=#f92672]STOP[/color][/cell] [cell]None[/cell] [cell]Halts the CPU execution completely.[/cell]
+[/table]
+
+[b][color=#fd971f]3. GDSCRIPT WRAPPER[/color][/b]
+If you don't wanna write in the fake assembly thing then you also have an option to use gdscript
+[ul]
+It is highly recommended that you look at the GDscriptWrapper.gd file to get a basic understanding of the helper functions included there.
+However, some of the basic helper functions include: 
+	isUpPressed() -> This returns true if the W key is pressed
+	isDownPressed() -> This returns true if the S key is pressed
+	isLeftPressed() -> This returns true if the A key is pressed
+	isRightPressed() -> This returns true if the D key is pressed.
+	isAPressed() -> This returns true if the Q key is pressed(Yes, I know I was thinking the A button of a console)
+	setRegisterValue(register: int, value: int) -> This sets the register with the id that you inputed to the value that you inputed.
+	addRegisterValue(register: int, value: int) -> This adds the values that you inputed to the register that you inputed.
+	subRegisterValue(register: int, value: int) -> This subtracts the value that you inputed from the register that you inputed.
+	getRegisterValue(register: int) -> This returns the value that is stored in the register that you inputed
+	draw_sprite(sprite_index: int, x: int, y: int) -> This draws the sprite of a specific ID and draws it to the x and y position that is inputed.
+	SwitchTileMap(tilemapindex: int) -> Loads the tilemap with the id that you inputted
+	DrawTestPattern() -> This will draw the test pattern that was created when I first started making this fantasy console.
+	moveSpriteWithButtons(sprite: int, vx: int, vy: int, reg1: int, reg2: int) -> This will set up a sprite to be moved with buttons
+	NOTE: In order for this to work you need to 
+[/ul]"
 	CodeEditor.text=decompile(Globals.ram.size() - 20480)
 	print("IDE Boot -> isOnGDscript: ", Globals.isOnGDscript, " | isJustLoaded: ", Globals.isJustLoaded)
 	setUpHighlighting()

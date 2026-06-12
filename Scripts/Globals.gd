@@ -11,3 +11,4 @@ var spriteData = PackedByteArray()
 var isOnGDscript: bool = false
 var GDscript = PackedStringArray()
 var isJustLoaded: bool = false
+var isOnTileMap: bool = false

@@ -15,7 +15,8 @@ enum {
 	SPR,
 	IF,
 	MOV_A_R,
-	CLEAR
+	CLEAR,
+	TILEMAP
 	#SPRFromspriteData
 }
 
@@ -105,6 +106,9 @@ func run_cpu():
 			CLEAR:
 				hardware.draw_test_pattern()
 				Globals.pc += 4
+			TILEMAP:
+				hardware.drawTilemap(Globals.ram[Globals.pc + 1])
+				Globals.pc += 2
 			_:
 				print("Unknown opcode: ", opcode, " at PC: ", Globals.pc)
 				Globals.pc += 1 

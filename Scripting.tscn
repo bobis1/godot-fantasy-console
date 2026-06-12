@@ -2,13 +2,14 @@
 
 [ext_resource type="Script" uid="uid://bktvlokoyk0ts" path="res://scripting.gd" id="1_l5ayn"]
 
-[node name="Scripting" type="Node2D" unique_id=1189686964 node_paths=PackedStringArray("NamingPopup", "CodeEditor", "GDscriptButton", "DocumentationButton", "Docs")]
+[node name="Scripting" type="Node2D" unique_id=1189686964 node_paths=PackedStringArray("NamingPopup", "CodeEditor", "GDscriptButton", "DocumentationButton", "Docs", "DocumentationText")]
 script = ExtResource("1_l5ayn")
 NamingPopup = NodePath("Control/NamingPopup")
 CodeEditor = NodePath("Control/HBoxContainer/CodeEdit")
 GDscriptButton = NodePath("Control/HBoxContainer/VBoxContainer/ScriptingToggle")
 DocumentationButton = NodePath("Control/HBoxContainer/VBoxContainer/Documentation")
 Docs = NodePath("Docs")
+DocumentationText = NodePath("Docs/RichTextLabel")
 
 [node name="Control" type="Control" parent="." unique_id=883977103]
 layout_mode = 3
