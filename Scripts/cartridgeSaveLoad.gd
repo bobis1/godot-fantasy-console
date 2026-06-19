@@ -75,9 +75,11 @@ func save_cartridge() -> void:
 				var data_size = gd_bytes.size()
 				print("Extracted script size: ", data_size)
 				file.seek_end()
+				print("SAVING RAM - Byte at 0x5000 is: ", Globals.ram[20480])
+				file.store_buffer(Globals.ram)
 				file.store_buffer(gd_bytes)
-				file.store_string("GDS")
 				file.store_32(data_size)
+				file.store_string("GDS")
 				file.close()
 	else:
 		errorDia.visible = true
@@ -108,7 +110,7 @@ func _on_file_dialog_file_selected(path: String) -> void:
 	var footer = file.get_buffer(3).get_string_from_utf8()
 	#var sprite_size = footer.decode_u32(0)
 	if footer == "ASM":
-		file.seek_end(-(Globals.ram.size()))
+		file.seek_end(-(Globals.ram.size() + 3))
 		var newRam = file.get_buffer(Globals.ram.size())
 		Globals.ram = newRam
 		print("New ram size", newRam.size())
@@ -117,21 +119,31 @@ func _on_file_dialog_file_selected(path: String) -> void:
 		#var newSpriteData = file.get_buffer(sprite_size)
 		#Globals.spriteData = newSpriteData
 		print("Image after loading", file.get_length() - Globals.ram.size())
+		Globals.IsRamInit = true
 	else:
 		Globals.isJustLoaded = true
 		Globals.isOnGDscript = true
+
 		file.seek_end(-20)
 		var last_bytes = file.get_buffer(20)
-		file.seek_end(-4)
+		file.seek_end(-7)
 		var size = file.get_32()
+		print("GDScript size ", size)
 		file.seek_end(-size-7)
 		var gdscriptBuffer = file.get_buffer(size)
 		var gdscriptString = gdscriptBuffer.get_string_from_utf8()
 		var loading_file = FileAccess.open("user://loading.txt", FileAccess.WRITE)
 		if loading_file:
+			loading_file.seek(0)
 			loading_file.store_string(gdscriptString)
+			loading_file.seek(0)
+		#print(loading_file.get_as_text())
 			loading_file.close()
-		print(loading_file.get_as_text())
+		file.seek_end(-(Globals.ram.size()+7+size))
+		var newRam = file.get_buffer(Globals.ram.size())
+		Globals.ram = newRam
+		print("LOADING RAM - Byte at 0x5000 is: ", Globals.ram[20480])
+		Globals.IsRamInit = true
 	pass 
 
 func change_color(image: Image) -> void:

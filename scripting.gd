@@ -78,14 +78,16 @@ However, some of the basic helper functions include:
 	SwitchTileMap(tilemapindex: int) -> Loads the tilemap with the id that you inputted
 	DrawTestPattern() -> This will draw the test pattern that was created when I first started making this fantasy console.
 	moveSpriteWithButtons(sprite: int, vx: int, vy: int, reg1: int, reg2: int) -> This will set up a sprite to be moved with buttons
-	NOTE: In order for this to work you need to 
+	NOTE: In order for this to work you need to run setUpSprite(startX: int, startY: int, reg1: int, reg2: int)
 [/ul]"
 	CodeEditor.text=decompile(Globals.ram.size() - 20480)
+	
 	print("IDE Boot -> isOnGDscript: ", Globals.isOnGDscript, " | isJustLoaded: ", Globals.isJustLoaded)
 	setUpHighlighting()
 	changeScriptingMode()
 	if Globals.isOnGDscript && Globals.isJustLoaded:
 		var loadingText = FileAccess.open("user://loading.txt", FileAccess.READ)
+		print("Successfully loaded script:\n", loadingText.get_as_text())
 		if loadingText != null:
 					var loaded_string = loadingText.get_as_text()
 					print("String pulled from file: \n", loaded_string) 
@@ -122,6 +124,7 @@ func _on_line_edit_text_submitted(new_text: String) -> void:
 		var loadFile = FileAccess.open("user://loading.txt", FileAccess.WRITE)
 		loadFile.store_string(file)
 		runGDscript(file)
+		loadFile.close()
 	pass 
 
 

@@ -1,0 +1,15 @@
+extends Node
+
+var GDscriptWrapper
+
+func _ready() -> void:
+	GDscriptWrapper = get_node("../GDscriptInterpreter")
+	GDscriptWrapper.setUpSprite(40, 40, 1, 2)
+	pass
+
+func _process(delta: float) -> void:
+	GDscriptWrapper.SwitchTilemap(1)
+	GDscriptWrapper.moveSpriteWithButtons(2, 5, 5, 1, 2)
+	if GDscriptWrapper.isUpPressed:
+		print("UP Pressed")
+	pass
