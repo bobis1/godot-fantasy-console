@@ -65,17 +65,12 @@ func save_cartridge() -> void:
 				file.seek_end()
 				file.store_buffer(catridgeData)
 				file.store_string("ASM")
-				print("Cartridge Size", file.get_length())
 				file.close()
 				Naming.visible = false
-				print("Data type: ", typeof(catridgeData))
-				print("Is data null? ", catridgeData == null)
 			else:
 				var gd_bytes = catridgeData.to_utf8_buffer()
 				var data_size = gd_bytes.size()
-				print("Extracted script size: ", data_size)
 				file.seek_end()
-				print("SAVING RAM - Byte at 0x5000 is: ", Globals.ram[20480])
 				file.store_buffer(Globals.ram)
 				file.store_buffer(gd_bytes)
 				file.store_32(data_size)
@@ -142,8 +137,9 @@ func _on_file_dialog_file_selected(path: String) -> void:
 		file.seek_end(-(Globals.ram.size()+7+size))
 		var newRam = file.get_buffer(Globals.ram.size())
 		Globals.ram = newRam
-		print("LOADING RAM - Byte at 0x5000 is: ", Globals.ram[20480])
 		Globals.IsRamInit = true
+		runGDscript(gdscriptString)
+
 	pass 
 
 func change_color(image: Image) -> void:
@@ -166,3 +162,25 @@ func change_color(image: Image) -> void:
 func _on_back_pressed() -> void:
 	get_tree().change_scene_to_file("res://main.tscn")
 	pass
+
+
+func runGDscript(script: String) -> void:
+	var n_script = GDScript.new()
+	
+	var clean_script = ""
+	for i in range(script.length()):
+		var char_code = script.unicode_at(i)
+		if char_code != 0 and char_code != 0xFFFD:
+			clean_script += String.chr(char_code)
+			
+	n_script.source_code = clean_script
+	
+	var compile = n_script.reload()
+	if compile == OK:
+		var MainScene = load("res://main.tscn")
+		var MainInstance = MainScene.instantiate()
+		var targetNode = MainInstance.get_node("GDscriptRunner")
+		targetNode.set_script(n_script)
+		add_child(MainInstance)
+	else:
+		print("Compiler failed even after scrubbing!")

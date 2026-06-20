@@ -1,0 +1,1 @@
+These are cartridges made before the second main update and will likely not work with the newer version of the console with the structural differences.

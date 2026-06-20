@@ -297,7 +297,6 @@ func runGDscript(script: String) -> void:
 			
 	n_script.source_code = clean_script
 	
-	# 3. Compile!
 	var compile = n_script.reload()
 	if compile == OK:
 		var MainScene = load("res://main.tscn")
