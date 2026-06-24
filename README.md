@@ -59,6 +59,26 @@ To create programs on this I created a very scuffed assembly language to do this
 |MOV_A_R| Moves a value from ram into a register.| MOV_A_R R0 19249|
 |CLEAR| This draws the test pattern.(Not recomended for use)|CLEAR|
 
+#### GDscript
+One alternative to using the assembly version of the fantasy console is using the GDscript mode. To switch to GD script, you need to hit the button circled here.
+![Demothingy](/ReadmeAssets/SwitchingExample.svg)
+The GDscript mode works like the GDscript that you are largely familiar with. The main difference is the the helper functions that are provided by the GDscript wrapper. A copy of the docs functions that are availible are in the editor itself. However here are some of them.
+	isUpPressed() -> This returns true if the W key is pressed /n
+	isDownPressed() -> This returns true if the S key is pressed
+	isLeftPressed() -> This returns true if the A key is pressed
+	isRightPressed() -> This returns true if the D key is pressed.
+	isAPressed() -> This returns true if the Q key is pressed(Yes, I know I was thinking the A button of a console)
+	setRegisterValue(register: int, value: int) -> This sets the register with the id that you inputed to the value that you inputed.
+	addRegisterValue(register: int, value: int) -> This adds the values that you inputed to the register that you inputed.
+	subRegisterValue(register: int, value: int) -> This subtracts the value that you inputed from the register that you inputed.
+	getRegisterValue(register: int) -> This returns the value that is stored in the register that you inputed
+	draw_sprite(sprite_index: int, x: int, y: int) -> This draws the sprite of a specific ID and draws it to the x and y position that is inputed.
+	SwitchTileMap(tilemapindex: int) -> Loads the tilemap with the id that you inputted
+	DrawTestPattern() -> This will draw the test pattern that was created when I first started making this fantasy console.
+	moveSpriteWithButtons(sprite: int, vx: int, vy: int, reg1: int, reg2: int) -> This will set up a sprite to be moved with buttons
+	NOTE: In order for this to work you need to run setUpSprite(startX: int, startY: int, reg1: int, reg2: int)
+
+
 #### Cartridges
 Right now the cartridges work by appending the ram to the end of a .png file. This .png file has a color randomly chosen. At some point I would like the center disk of the .png reflect what is actually being loading into it.
 

@@ -283,6 +283,7 @@ func changeScriptingMode() -> void:
 		CodeEditor.text = FileAccess.get_file_as_string(boilerPlate)
 	else:
 		GDscriptButton.text = "Assembly"
+		CodeEditor.text = ""
 	print(Globals.isOnGDscript)
 
 
