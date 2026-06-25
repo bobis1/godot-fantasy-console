@@ -85,3 +85,7 @@ Right now the cartridges work by appending the ram to the end of a .png file. Th
 #### Inputs
 There are 6 inputs right now W,A,S,D,Q, and E. The input byte will automatically change based on which of these inputs you click. with 1,2,3,4,5,6 being the respective values based on the inputs.
 
+
+
+#### AI use
+I used gemini to help explain concepts and debug.
